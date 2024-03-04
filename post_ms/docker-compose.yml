@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  mongoinstance:
+    image: mongo:latest
+    container_name: post_db_mongo
+    ports: 
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=angel
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    volumes:
+      - mongo-data:/data/db
+  
+volumes:
+  mongo-data:
