@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+const PORT = parseInt(process.env.SERVER_PORT, 10) || 3001;
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
@@ -14,7 +15,8 @@ async function bootstrap() {
 
   // La ruta en que se sirve la documentación
   SwaggerModule.setup('docs', app, document);
-  await app.listen(3001);
+
+  await app.listen(PORT);
   console.log(`Application is running on: ${await app.getUrl()}`);
 }
 bootstrap();
