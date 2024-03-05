@@ -1,16 +1,37 @@
-version: "3"
+version: '3'
 
 services:
-  mongoinstance:
-    image: mongo:latest
-    container_name: post_db_mongo
-    ports: 
-      - "27017:27017"
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=angel
-      - MONGO_INITDB_ROOT_PASSWORD=password
+  unconnect_posts_ms:
+    container_name: 'unconnect_posts_ms'
+    build:
+      context: .
+      target: development
     volumes:
-      - mongo-data:/data/db
-  
+      - .:/usr/src/app # for hot-reloading
+      # - /usr/src/app/node_modules
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}
+      - 3021:3021
+    command: npm run start:debug
+    env_file:
+      - .env
+    depends_on:
+      - unconnect_posts_db
+    links:
+      - unconnect_posts_db
+
+  unconnect_posts_db:
+    image: mongo:latest
+    container_name: 'unconnect_posts_db'
+    volumes:
+      - mongodb_data_container:/data/db
+    env_file:
+      - .env
+    environment:
+      - MONGO_INITDB_DATABASE=${MONGO_DATABASE}
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+    ports:
+      - ${MONGO_PORT}:${MONGO_PORT}
 volumes:
-  mongo-data:
+  mongodb_data_container:
