@@ -1,7 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { Query as QueryType } from 'express-serve-static-core';
 
 @Controller('posts')
 export class PostsController {
@@ -9,27 +19,30 @@ export class PostsController {
 
   @Post()
   create(@Body() createPostDto: CreatePostDto) {
-    return this.postsService.create(createPostDto);
+    return this.postsService.createPost(createPostDto);
   }
 
+  @Get(':id/userPosts')
+  getuserPosts(@Query('page') page: QueryType) {
+    return this.postsService.getUserPosts(page);
+  }
   @Get()
-  findAll() {
-    return this.postsService.findAll();
+  getGroupPost(@Query('page') page: QueryType, @Param('id') id: string) {
+    return this.postsService.getGroupPost(page);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.postsService.findOne(+id);
+  getOnePost(@Param('id') id: string) {
+    return this.postsService.getOnePost(+id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
-    return this.postsService.update(+id, updatePostDto);
+    return this.postsService.updatePost(+id, updatePostDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.postsService.remove(+id);
+    return this.postsService.deletePost(+id);
   }
 }
-
