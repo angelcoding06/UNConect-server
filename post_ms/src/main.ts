@@ -1,9 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ValidationPipe } from '@nestjs/common';
+
 const PORT = parseInt(process.env.SERVER_PORT, 10) || 3001;
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.useGlobalPipes(new ValidationPipe()); // Add validations to all endpoints
 
   // Configurar títulos de documentación
   const options = new DocumentBuilder()
