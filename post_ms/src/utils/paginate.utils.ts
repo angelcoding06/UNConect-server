@@ -1,13 +1,11 @@
 import { Model } from 'mongoose';
+import { Query as QueryType } from 'express-serve-static-core';
 
 export async function paginate<T>(
   model: Model<T>,
-  page: any,
-  id: any,
-  field: any,
+  page: QueryType,
+  filter: object,
 ): Promise<any> {
-  const filter = {};
-  filter[field] = id;
   const responsePerPage = 9;
   const currentPage = Number(page) || 1;
   const skip = responsePerPage * (currentPage - 1);
