@@ -11,6 +11,7 @@ import {
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+
 import { Query as QueryType } from 'express-serve-static-core';
 @Controller('posts')
 export class PostsController {
@@ -29,8 +30,9 @@ export class PostsController {
   getuserPosts(
     @Query('page') page: QueryType,
     @Headers('UserId') UserId: string,
+    @Headers('GroupId') GroupId?: string,
   ) {
-    return this.postsService.getUserPosts(page, UserId);
+    return this.postsService.getUserPosts(page, UserId, GroupId);
   }
 
   @Get('groupPost')
@@ -47,12 +49,15 @@ export class PostsController {
   }
 
   @Patch()
-  update(@Headers('PostId') id: string, @Body() updatePostDto: UpdatePostDto) {
-    return this.postsService.updatePost(id, updatePostDto);
+  update(
+    @Headers('PostId') PostId: string,
+    @Body() updatePostDto: UpdatePostDto,
+  ) {
+    return this.postsService.updatePost(PostId, updatePostDto);
   }
 
   @Delete()
-  remove(@Headers('PostId') id: string) {
-    return this.postsService.deletePost(id);
+  remove(@Headers('PostId') PostId: string) {
+    return this.postsService.deletePost(PostId);
   }
 }
