@@ -4,45 +4,55 @@ import {
   Post,
   Body,
   Patch,
-  Param,
   Delete,
   Query,
+  Headers,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { Query as QueryType } from 'express-serve-static-core';
-
 @Controller('posts')
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Post()
-  create(@Body() createPostDto: CreatePostDto) {
-    return this.postsService.createPost(createPostDto);
+  create(
+    @Body() createPostDto: CreatePostDto,
+    @Headers('UserId') UserId: string,
+    @Headers('GroupId') GroupId: string,
+  ) {
+    return this.postsService.createPost(createPostDto, UserId, GroupId);
   }
 
-  @Get(':id/userPosts')
-  getuserPosts(@Query('page') page: QueryType) {
-    return this.postsService.getUserPosts(page);
+  @Get('userPost')
+  getuserPosts(
+    @Query('page') page: QueryType,
+    @Headers('UserId') UserId: string,
+  ) {
+    return this.postsService.getUserPosts(page, UserId);
   }
+
+  @Get('groupPost')
+  getGroupPost(
+    @Query('page') page: QueryType,
+    @Headers('GroupId') GroupId: string,
+  ) {
+    return this.postsService.getGroupPost(page, GroupId);
+  }
+
   @Get()
-  getGroupPost(@Query('page') page: QueryType, @Param('id') id: string) {
-    return this.postsService.getGroupPost(page);
+  getOnePost(@Headers('PostId') PostId: string) {
+    return this.postsService.getOnePost(PostId);
   }
 
-  @Get(':id')
-  getOnePost(@Param('id') id: string) {
-    return this.postsService.getOnePost(+id);
+  @Patch()
+  update(@Headers('PostId') id: string, @Body() updatePostDto: UpdatePostDto) {
+    return this.postsService.updatePost(id, updatePostDto);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
-    return this.postsService.updatePost(+id, updatePostDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.postsService.deletePost(+id);
+  @Delete()
+  remove(@Headers('PostId') id: string) {
+    return this.postsService.deletePost(id);
   }
 }
