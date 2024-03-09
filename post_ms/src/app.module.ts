@@ -6,6 +6,7 @@ import { DatabaseModule } from './database/database.module';
 
 import { ConfigModule } from '@nestjs/config';
 import { LikesModule } from './likes/likes.module';
+import { CommentsModule } from './comments/comments.module';
 import mongodbConfig from './shared/config/mongodb.config';
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import mongodbConfig from './shared/config/mongodb.config';
     DatabaseModule,
     PostsModule,
     LikesModule,
+    CommentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
