@@ -13,6 +13,8 @@ async function bootstrap() {
     .setTitle('MongoDB Posts REST API')
     .setDescription('Micoservicio de Posts con MongoDB')
     .setVersion('1.0')
+    .addTag('Posts', 'Endpoints relacionados con posts')
+    .addTag('Likes', 'Endpoints relacionados con likes')
     .build();
   const document = SwaggerModule.createDocument(app, options);
 

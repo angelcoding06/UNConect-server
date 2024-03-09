@@ -25,7 +25,6 @@ export class PostsService {
       if (GroupId) {
         createPost.GroupId = GroupId;
       }
-      console.log('createPost', createPost);
       return await createPost.save();
     } catch (error) {
       throw new HttpException(
@@ -36,9 +35,7 @@ export class PostsService {
   }
 
   async getUserPosts(page: Query, UserId: string, GroupId?: string) {
-    console.log('Group', GroupId);
     const filters = { UserId: UserId, GroupId: GroupId || null };
-    console.log('filters', filters);
     try {
       const userPosts = await paginate(this.postModel, page, filters);
       if (userPosts.items.length === 0) {
@@ -58,15 +55,14 @@ export class PostsService {
 
   async getOnePost(PostId: string) {
     try {
-      const post = await this.postModel.findById(PostId);
-      if (!post) {
+      const postFound = await this.postModel.findById(PostId);
+      if (!postFound) {
         throw new HttpException(
-          //!take a look, it doesnt work
           'No se ha encontrado este post1',
           HttpStatus.NOT_FOUND,
         );
       }
-      return post;
+      return postFound;
     } catch (error) {
       throw new HttpException(
         'No se ha encontrado este post',
@@ -76,14 +72,20 @@ export class PostsService {
   }
 
   async updatePost(PostId: string, updatePostDto: UpdatePostDto) {
+    const postFound = await this.postModel.findById(PostId);
+    if (!postFound) {
+      throw new HttpException(
+        'No se ha encontrado el Post a modificar',
+        HttpStatus.NOT_FOUND,
+      );
+    }
     try {
-      const postFound = await this.postModel.findById(PostId);
       const updatedPost = Object.assign(postFound, updatePostDto);
       await this.postModel.updateOne({ _id: PostId }, updatedPost);
       return updatedPost;
     } catch (error) {
       throw new HttpException(
-        'No se ha podido modificar el post',
+        'Error modificando el post',
         HttpStatus.NOT_FOUND,
       );
     }
@@ -104,16 +106,14 @@ export class PostsService {
   }
 
   async deletePost(PostId: string) {
+    const postFound = await this.postModel.findById(PostId);
+    if (!postFound) {
+      throw new HttpException(
+        'No se ha encontrado el post a eliminar',
+        HttpStatus.NOT_FOUND,
+      );
+    }
     try {
-      const postFound = await this.postModel.findById(PostId);
-      if (!postFound) {
-        //!take a look, it doesnt work
-        throw new HttpException(
-          'No se ha encontrado el post a eliminar',
-          HttpStatus.NOT_FOUND,
-        );
-      }
-      console.log('entro al try');
       await this.postModel.deleteOne({ _id: PostId });
       return `El post con id ${PostId} ha sido eliminado con éxito`;
     } catch (error) {

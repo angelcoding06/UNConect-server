@@ -13,6 +13,8 @@ import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 
 import { Query as QueryType } from 'express-serve-static-core';
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('Posts')
 @Controller('posts')
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
