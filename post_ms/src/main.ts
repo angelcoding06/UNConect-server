@@ -15,6 +15,7 @@ async function bootstrap() {
     .setVersion('1.0')
     .addTag('Posts', 'Endpoints relacionados con posts')
     .addTag('Likes', 'Endpoints relacionados con likes')
+    .addTag('Comments', 'Endpoints relacionados con comments')
     .build();
   const document = SwaggerModule.createDocument(app, options);
 
