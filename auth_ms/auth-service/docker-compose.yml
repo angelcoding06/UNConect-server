@@ -1,0 +1,33 @@
+version: '3.9'
+
+services:
+  auth-service:
+    container_name: auth_auth_ms
+    image: auth-service
+    build: .
+    ports:
+      - 8081:8081
+    environment:
+      - SPRING_PROFILE = ${SPRING_PROFILE}
+      - DATABASE_URL=${DATABASE_URL}
+      - DATABASE_USERNAME=${DATABASE_USERNAME}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+    networks:
+      - springboot-mysql-net
+    depends_on:
+      - mysqldb
+    restart: on-failure
+  mysqldb:
+    container_name: auth_mysqldb_db
+    image: mysql
+    networks:
+      - springboot-mysql-net
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+    volumes:
+      - auth_st:/var/lib/mysql
+networks:
+  springboot-mysql-net:
+volumes:
+  auth_st:
