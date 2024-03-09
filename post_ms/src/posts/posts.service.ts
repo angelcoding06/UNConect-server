@@ -40,34 +40,42 @@ export class PostsService {
       const userPosts = await paginate(this.postModel, page, filters);
       if (userPosts.items.length === 0) {
         throw new HttpException(
-          'No se encontraron post de este usuario',
+          'No se encontraron posts de este usuario',
           HttpStatus.NOT_FOUND,
         );
       }
       return userPosts;
     } catch (error) {
-      throw new HttpException(
-        'No se encontraron post de este usuario',
-        HttpStatus.NOT_FOUND,
-      );
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new HttpException(
+          'Hubo un error al buscar los post del usuario',
+          HttpStatus.NOT_FOUND,
+        );
+      }
     }
   }
 
   async getOnePost(PostId: string) {
     try {
-      const postFound = await this.postModel.findById(PostId);
-      if (!postFound) {
+      const postFound = await this.postModel.find({ PostId: PostId });
+      if (postFound.length === 0) {
         throw new HttpException(
-          'No se ha encontrado este post1',
+          'No se ha encontrado este post',
           HttpStatus.NOT_FOUND,
         );
       }
       return postFound;
     } catch (error) {
-      throw new HttpException(
-        'No se ha encontrado este post',
-        HttpStatus.NOT_FOUND,
-      );
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new HttpException(
+          'Hubo un error al buscar el post',
+          HttpStatus.NOT_FOUND,
+        );
+      }
     }
   }
 
@@ -85,7 +93,7 @@ export class PostsService {
       return updatedPost;
     } catch (error) {
       throw new HttpException(
-        'Error modificando el post',
+        'Hubo un error modificando el post',
         HttpStatus.NOT_FOUND,
       );
     }
@@ -95,13 +103,22 @@ export class PostsService {
     const filter = { GroupId: GroupId };
     try {
       const groupPosts = await paginate(this.postModel, page, filter);
-
+      if (groupPosts.items.length === 0) {
+        throw new HttpException(
+          'No se encontraron posts de este grupo',
+          HttpStatus.NOT_FOUND,
+        );
+      }
       return groupPosts;
     } catch (error) {
-      throw new HttpException(
-        'No se han encontrado post de este grupo',
-        HttpStatus.NOT_FOUND,
-      );
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new HttpException(
+          'Hubo un error al buscar los posts del grupo',
+          HttpStatus.NOT_FOUND,
+        );
+      }
     }
   }
 

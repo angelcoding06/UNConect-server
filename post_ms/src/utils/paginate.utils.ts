@@ -13,9 +13,6 @@ export async function paginate<T>(
   const totalPages = Math.ceil(totalCount / responsePerPage);
 
   const items = await model.find(filter).limit(responsePerPage).skip(skip);
-  if (items.length === 0) {
-    throw new Error('No data found');
-  }
   return {
     currentPage,
     totalPages,

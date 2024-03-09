@@ -13,7 +13,7 @@ import { PostsService } from 'src/posts/posts.service';
 export class LikesService {
   constructor(
     @InjectModel(Like.name) private likeModel: Model<Like>,
-    private PostsService: PostsService,
+    private readonly PostsService: PostsService,
   ) {}
 
   async createLike(
@@ -62,10 +62,14 @@ export class LikesService {
       }
       return likes;
     } catch (error) {
-      throw new HttpException(
-        'Hubo un error al buscar los likes de esta publicación',
-        HttpStatus.NOT_FOUND,
-      );
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new HttpException(
+          'Hubo un error al buscar los likes de esta publicación',
+          HttpStatus.NOT_FOUND,
+        );
+      }
     }
   }
 
@@ -99,10 +103,9 @@ export class LikesService {
   async removeLike(UserId: string, PostId: string) {
     const filter = { UserId: UserId, PostId: PostId };
     const likeFound = await this.likeModel.find(filter);
-    console.log(likeFound);
     if (!likeFound[0]) {
       throw new HttpException(
-        'No se ha encontrado el Like',
+        'No se ha encontrado el Like a eliminar',
         HttpStatus.NOT_FOUND,
       );
     }
@@ -110,10 +113,14 @@ export class LikesService {
       await this.likeModel.deleteOne(filter);
       return `El like el post con id ${PostId} dado por el usuario ${UserId} ha sido eliminado con éxito`;
     } catch (error) {
-      throw new HttpException(
-        'No se ha podido elimnar el like',
-        HttpStatus.NOT_FOUND,
-      );
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new HttpException(
+          'Hubo un error al buscar el like',
+          HttpStatus.NOT_FOUND,
+        );
+      }
     }
   }
 }
