@@ -1,6 +1,6 @@
 export enum TypeLike {
-  LIKE = 'Like',
-  DISLIKE = 'Dislike',
+  Like = 'LIKE',
+  Dislike = 'DISLIKE',
 }
 
 interface Ilike {

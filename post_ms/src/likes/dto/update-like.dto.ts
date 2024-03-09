@@ -5,7 +5,7 @@ import { IsEnum, IsNotEmpty } from 'class-validator';
 import { TypeLike } from '../interfaces/likes.interface';
 
 export class UpdateLikeDto extends PartialType(CreateLikeDto) {
-  @ApiProperty()
+  @ApiProperty({ enum: TypeLike, isArray: true, required: true })
   @IsNotEmpty()
   @IsEnum(TypeLike)
   type: TypeLike;

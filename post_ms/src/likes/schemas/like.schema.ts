@@ -14,10 +14,10 @@ export class Like implements Ilike {
   @Prop({ required: true, type: String })
   UserId: string;
 
-  @Prop({ required: true, type: String, unique: true })
+  @Prop({ required: true, type: 'ObjectId', ref: 'Post' })
   PostId: string;
 
-  @Prop({ type: TypeLike, required: true })
+  @Prop({ required: true, enum: TypeLike })
   type: TypeLike;
 }
 export const LikeSchema = SchemaFactory.createForClass(Like);
