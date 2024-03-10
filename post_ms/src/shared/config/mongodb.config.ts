@@ -9,6 +9,5 @@ export default registerAs('mongodb', () => {
     MONGO_PASSWORD,
   } = process.env;
   const uri = `mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DATABASE}?retryWrites=true&w=majority`;
-
   return { uri };
 });
