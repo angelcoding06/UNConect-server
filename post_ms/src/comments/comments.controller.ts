@@ -1,34 +1,56 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Delete,
+  Headers,
+  Query,
+} from '@nestjs/common';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
+import { ApiTags } from '@nestjs/swagger';
+import { Query as QueryType } from 'express-serve-static-core';
 
+@ApiTags('Comments')
 @Controller('comments')
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 
   @Post()
-  create(@Body() createCommentDto: CreateCommentDto) {
-    return this.commentsService.create(createCommentDto);
+  createComment(
+    @Body() createCommentDto: CreateCommentDto,
+    @Headers('UserId') UserId: string,
+    @Headers('PostId') PostId: string,
+  ) {
+    return this.commentsService.createComment(createCommentDto, UserId, PostId);
   }
 
   @Get()
-  findAll() {
-    return this.commentsService.findAll();
+  findAll(@Headers('PostId') PostId: string, @Query('page') page: QueryType) {
+    return this.commentsService.getCommentsbyPost(page, PostId);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.commentsService.findOne(+id);
+  @Patch()
+  update(
+    @Headers('CommentId') CommentId: string,
+    @Headers('PostId') PostId: string,
+    @Body() updateCommentDto: UpdateCommentDto,
+  ) {
+    return this.commentsService.updateComment(
+      CommentId,
+      PostId,
+      updateCommentDto,
+    );
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCommentDto: UpdateCommentDto) {
-    return this.commentsService.update(+id, updateCommentDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.commentsService.remove(+id);
+  @Delete()
+  async remove(
+    @Headers('CommentId') CommentId: string,
+    @Headers('PostId') PostId: string,
+  ) {
+    return await this.commentsService.removeComment(CommentId, PostId);
   }
 }
