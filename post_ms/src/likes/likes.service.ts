@@ -12,7 +12,8 @@ import { PostsService } from 'src/posts/posts.service';
 @Injectable()
 export class LikesService {
   constructor(
-    @InjectModel(Like.name) private likeModel: Model<Like>,
+    @InjectModel(Like.name)
+    private likeModel: Model<Like>,
     private readonly PostsService: PostsService,
   ) {}
 
@@ -41,7 +42,7 @@ export class LikesService {
     } catch (error) {
       throw new HttpException(
         'No fue posible crear el like',
-        HttpStatus.NOT_FOUND,
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -67,7 +68,7 @@ export class LikesService {
       } else {
         throw new HttpException(
           'Hubo un error al buscar los likes de esta publicación',
-          HttpStatus.NOT_FOUND,
+          HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
     }
@@ -95,7 +96,7 @@ export class LikesService {
     } catch (error) {
       throw new HttpException(
         'No se ha podido modificar el Like',
-        HttpStatus.NOT_FOUND,
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -118,9 +119,20 @@ export class LikesService {
       } else {
         throw new HttpException(
           'Hubo un error al buscar el like',
-          HttpStatus.NOT_FOUND,
+          HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
+    }
+  }
+
+  async deleteLikesByPostId(postId: string) {
+    try {
+      await this.likeModel.deleteMany({ postId });
+    } catch (error) {
+      throw new HttpException(
+        'No se han podido eliminar los likes del post',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }
