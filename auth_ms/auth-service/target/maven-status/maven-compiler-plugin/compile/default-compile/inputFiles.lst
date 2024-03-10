@@ -1,0 +1,11 @@
+P:\SoftwareArchitecture\UNConnect-server\auth_ms\auth-service\src\main\java\com\social_network\authservice\dto\TokenDto.java
+P:\SoftwareArchitecture\UNConnect-server\auth_ms\auth-service\src\main\java\com\social_network\authservice\entity\Role.java
+P:\SoftwareArchitecture\UNConnect-server\auth_ms\auth-service\src\main\java\com\social_network\authservice\entity\AuthUser.java
+P:\SoftwareArchitecture\UNConnect-server\auth_ms\auth-service\src\main\java\com\social_network\authservice\controller\AuthUserController.java
+P:\SoftwareArchitecture\UNConnect-server\auth_ms\auth-service\src\main\java\com\social_network\authservice\security\JwtProvider.java
+P:\SoftwareArchitecture\UNConnect-server\auth_ms\auth-service\src\main\java\com\social_network\authservice\security\PasswordEncoderConfig.java
+P:\SoftwareArchitecture\UNConnect-server\auth_ms\auth-service\src\main\java\com\social_network\authservice\AuthServiceApplication.java
+P:\SoftwareArchitecture\UNConnect-server\auth_ms\auth-service\src\main\java\com\social_network\authservice\service\AuthUserService.java
+P:\SoftwareArchitecture\UNConnect-server\auth_ms\auth-service\src\main\java\com\social_network\authservice\repository\AuthUserRepository.java
+P:\SoftwareArchitecture\UNConnect-server\auth_ms\auth-service\src\main\java\com\social_network\authservice\dto\AuthUserDto.java
+P:\SoftwareArchitecture\UNConnect-server\auth_ms\auth-service\src\main\java\com\social_network\authservice\security\SecurityConfig.java

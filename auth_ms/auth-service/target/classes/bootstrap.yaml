@@ -1,0 +1,28 @@
+spring:
+  profiles:
+    default: "local_dev"
+    active: "docker,local_dev"
+  application:
+    name: auth-service
+  cloud:
+    config:
+      enabled: true
+      uri: http://localhost:8081
+  datasource:
+    url: jdbc:mysql://localhost:3306/authdb
+    username: root
+    password: newpass123
+    driverClassName: com.mysql.cj.jdbc.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+server:
+  port : 8081
+eureka:
+  client:
+    register-with-eureka: false
+jwt:
+  secret: secretEncodePassThisIsNotInsecure
