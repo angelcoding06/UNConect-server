@@ -41,7 +41,7 @@ export class PostsService {
       return await createPost.save();
     } catch (error) {
       throw new HttpException(
-        'No fue posible crear el post',
+        'It was not possible to create the post',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -53,7 +53,7 @@ export class PostsService {
       const userPosts = await paginate(this.postModel, page, filters);
       if (userPosts.items.length === 0) {
         throw new HttpException(
-          'No se encontraron posts de este usuario',
+          'No posts were found for this user',
           HttpStatus.NOT_FOUND,
         );
       }
@@ -63,7 +63,7 @@ export class PostsService {
         throw error;
       } else {
         throw new HttpException(
-          'Hubo un error al buscar los post del usuario',
+          `There was an error searching for the user's posts`,
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
@@ -71,30 +71,26 @@ export class PostsService {
   }
 
   async getOnePost(PostId: string) {
-    // const postFound = await this.postModel.find({ _id: PostId });
-    // console.log('Post found desde getonepost ', postFound);
     try {
       const postFound = await this.postModel.find({ _id: PostId });
-      console.log('Post found desde getonepost ', postFound);
       if (postFound.length === 0) {
         throw new HttpException(
-          'No se ha encontrado este post',
+          'This post was not found',
           HttpStatus.NOT_FOUND,
         );
       }
       return postFound;
     } catch (error) {
-      console.log('Error desde getonepost ', error);
       if (error instanceof HttpException) {
         throw error;
       } else if (error.name == 'CastError') {
         throw new HttpException(
-          'El id del post no es válido',
+          'The post id is not valid',
           HttpStatus.NOT_FOUND,
         );
       } else {
         throw new HttpException(
-          'Hubo un error al buscar el post',
+          'There was an error searching for the post',
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
@@ -105,7 +101,7 @@ export class PostsService {
     const postFound = await this.postModel.findById(PostId);
     if (!postFound) {
       throw new HttpException(
-        'No se ha encontrado el Post a modificar',
+        'The post to modify was not found',
         HttpStatus.NOT_FOUND,
       );
     }
@@ -115,7 +111,7 @@ export class PostsService {
       return updatedPost;
     } catch (error) {
       throw new HttpException(
-        'Hubo un error modificando el post',
+        'There was an error modifying the post',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -127,7 +123,7 @@ export class PostsService {
       const groupPosts = await paginate(this.postModel, page, filter);
       if (groupPosts.items.length === 0) {
         throw new HttpException(
-          'No se encontraron posts de este grupo',
+          'No posts found for this group',
           HttpStatus.NOT_FOUND,
         );
       }
@@ -137,33 +133,30 @@ export class PostsService {
         throw error;
       } else {
         throw new HttpException(
-          'Hubo un error al buscar los posts del grupo',
+          'An error occurred while searching for the group posts',
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
     }
   }
 
-  async deletePost(PostId: string) {
+  async deletePost(PostId: string): Promise<string> {
     const postFound = await this.postModel.findById(PostId);
     if (!postFound) {
       throw new HttpException(
-        'No se ha encontrado el post a eliminar',
+        'The post to delete was not found',
         HttpStatus.NOT_FOUND,
       );
     }
     try {
-      // Se eliminan los comentarios y likes asociados al post antes de eliminar el post
-      const pruebaComment =
-        await this.commentsService.deleteCommentsByPostId(PostId);
-      console.log(pruebaComment);
-      const pruebaLike = await this.likesService.deleteLikesByPostId(PostId);
-      console.log(pruebaLike);
+      // Delete all likes and comments related to the post
+      await this.commentsService.deleteCommentsByPostId(PostId);
+      await this.likesService.deleteLikesByPostId(PostId);
       await this.postModel.deleteOne({ _id: PostId });
-      return `El post con id ${PostId} ha sido eliminado con éxito`;
+      return `The post with id ${PostId} has been deleted successfully`;
     } catch (error) {
       throw new HttpException(
-        'No se ha podido elimnar el post',
+        'The post could not be deleted, an unknown error occurred',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

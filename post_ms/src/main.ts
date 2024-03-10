@@ -8,7 +8,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe()); // Add validations to all endpoints
 
-  // Configurar títulos de documentación
+  // Add documentation tags and titles.
   const options = new DocumentBuilder()
     .setTitle('MongoDB Posts REST API')
     .setDescription('Micoservicio de Posts con MongoDB')
@@ -18,8 +18,7 @@ async function bootstrap() {
     .addTag('Comments', 'Endpoints relacionados con comments')
     .build();
   const document = SwaggerModule.createDocument(app, options);
-
-  // La ruta en que se sirve la documentación
+  //Documentation endpoint
   SwaggerModule.setup('docs', app, document);
 
   await app.listen(PORT);

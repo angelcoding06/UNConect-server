@@ -26,7 +26,7 @@ export class Post implements Ipost {
       validator: function (value: string[]) {
         return value.length <= 4;
       },
-      message: 'El campo media no puede tener más de 4 elementos',
+      message: 'The field media cannot have more than 4 elements',
     },
   })
   Media?: string[];

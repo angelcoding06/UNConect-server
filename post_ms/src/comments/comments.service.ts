@@ -31,7 +31,7 @@ export class CommentsService {
     const postFound = await this.postsService.getOnePost(PostId);
     if (!postFound) {
       throw new HttpException(
-        'No se encuentra el post al que quiere comentar',
+        'The post from which you wanted to get comments was not found',
         HttpStatus.NOT_FOUND,
       );
     }
@@ -42,7 +42,7 @@ export class CommentsService {
       return await createdComment.save();
     } catch (error) {
       throw new HttpException(
-        'Hubo un error al crear el comentario',
+        'There was an error creating the comment',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -51,10 +51,9 @@ export class CommentsService {
   async getCommentsbyPost(page: Query, PostId: string) {
     const filter = { PostId: PostId };
     const postFound = await this.postsService.getOnePost(PostId);
-    console.log(postFound);
     if (!postFound) {
       throw new HttpException(
-        'No se encontró el post del que quería obtener comentarios',
+        'The post from which you wanted to get comments was not found',
         HttpStatus.NOT_FOUND,
       );
     }
@@ -63,7 +62,7 @@ export class CommentsService {
       const comments = await paginate(this.commentModel, page, filter);
       if (comments.items.length === 0) {
         throw new HttpException(
-          'No se encontraron comments de está publicación',
+          'There were no comments found for this post',
           HttpStatus.NOT_FOUND,
         );
       }
@@ -73,7 +72,7 @@ export class CommentsService {
         throw error;
       } else {
         throw new HttpException(
-          'Hubo un error al buscar los comments de esta publicación',
+          'There was an error searching for the comments of this post',
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
@@ -86,10 +85,9 @@ export class CommentsService {
     updateCommentDto: UpdateCommentDto,
   ) {
     const postFound = await this.postsService.getOnePost(PostId);
-    console.log(postFound, 'postfound');
     if (!postFound) {
       throw new HttpException(
-        'No se encontró el post del que quería obtener comentarios',
+        'The post from which you wanted to get comments was not found',
         HttpStatus.NOT_FOUND,
       );
     }
@@ -97,7 +95,7 @@ export class CommentsService {
     const commentFound = await this.commentModel.find(filter);
     if (!commentFound[0]) {
       throw new HttpException(
-        'No se ha encontrado el comentario',
+        'The comment to update was not found',
         HttpStatus.NOT_FOUND,
       );
     }
@@ -107,7 +105,7 @@ export class CommentsService {
       return updatedComment;
     } catch (error) {
       throw new HttpException(
-        'Ha ocurrido un error al actualizar el comentario',
+        'There was an error updating the comment',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -116,30 +114,28 @@ export class CommentsService {
   async removeComment(CommentId: string, PostId: string) {
     const filter = { _id: CommentId };
     const postFound = await this.postsService.getOnePost(PostId);
-    console.log(postFound, 'postfound');
     if (!postFound) {
       throw new HttpException(
-        'No se encontró el post del que quería obtener comentarios',
+        'The post from which you wanted to get comments was not found',
         HttpStatus.NOT_FOUND,
       );
     }
     const commentFound = await this.commentModel.find(filter);
-    console.log(commentFound, 'commentFound');
     if (!commentFound[0]) {
       throw new HttpException(
-        'No se ha encontrado el comentario a eliminar',
+        'The comment to delete was not found',
         HttpStatus.NOT_FOUND,
       );
     }
     try {
       await this.commentModel.deleteOne(filter);
-      return `El comentario el con id ${CommentId} dado por el usuario  ha sido eliminado con éxito`;
+      return `The comment with id ${CommentId} given by the user has been successfully deleted`;
     } catch (error) {
       if (error instanceof HttpException) {
         throw error;
       } else {
         throw new HttpException(
-          'Hubo un error al eliminar el comentario',
+          'There was an error deleting the comment',
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
@@ -151,7 +147,7 @@ export class CommentsService {
       await this.commentModel.deleteMany({ PostId: postId });
     } catch (error) {
       throw new HttpException(
-        'No se han podido eliminar los comentarios del post',
+        'There was an error deleting the comments of the post',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

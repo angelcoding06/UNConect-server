@@ -37,7 +37,7 @@ export class LikesService {
     const existingLike = await this.likeModel.findOne(filter);
     if (existingLike) {
       throw new HttpException(
-        'Ya existe un like del usuario para este post',
+        'There is already a like from the user for this post',
         HttpStatus.NOT_FOUND,
       );
     }
@@ -48,7 +48,7 @@ export class LikesService {
       return await createLike.save();
     } catch (error) {
       throw new HttpException(
-        'No fue posible crear el like',
+        'It was not possible to create the like',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -64,7 +64,7 @@ export class LikesService {
       const likes = await paginate(this.likeModel, page, filter);
       if (likes.items.length === 0) {
         throw new HttpException(
-          'No se encontraron likes de está publicación',
+          'There were no likes found for this post',
           HttpStatus.NOT_FOUND,
         );
       }
@@ -74,7 +74,7 @@ export class LikesService {
         throw error;
       } else {
         throw new HttpException(
-          'Hubo un error al buscar los likes de esta publicación',
+          'There was an error searching for the likes of this post',
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
@@ -91,10 +91,7 @@ export class LikesService {
     // We have to use [0] because the result is an array with one element
     // Meanwhile findbyId gives us an object, find gives us an array
     if (!likeFound[0]) {
-      throw new HttpException(
-        'No se ha encontrado el Like',
-        HttpStatus.NOT_FOUND,
-      );
+      throw new HttpException('Like to update not found', HttpStatus.NOT_FOUND);
     }
     try {
       const updatedLike = Object.assign(likeFound[0], updateLikeDto);
@@ -102,7 +99,7 @@ export class LikesService {
       return updatedLike;
     } catch (error) {
       throw new HttpException(
-        'No se ha podido modificar el Like',
+        'There was an error modifying the like',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -112,20 +109,17 @@ export class LikesService {
     const filter = { UserId: UserId, PostId: PostId };
     const likeFound = await this.likeModel.find(filter);
     if (!likeFound[0]) {
-      throw new HttpException(
-        'No se ha encontrado el Like a eliminar',
-        HttpStatus.NOT_FOUND,
-      );
+      throw new HttpException('Like to delete not found', HttpStatus.NOT_FOUND);
     }
     try {
       await this.likeModel.deleteOne(filter);
-      return `El like el post con id ${PostId} dado por el usuario ${UserId} ha sido eliminado con éxito`;
+      return `The like on the post with id ${PostId} given by the user ${UserId} has been successfully deleted`;
     } catch (error) {
       if (error instanceof HttpException) {
         throw error;
       } else {
         throw new HttpException(
-          'Hubo un error al buscar el like',
+          'There was an error searching for the like',
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
@@ -137,7 +131,7 @@ export class LikesService {
       await this.likeModel.deleteMany({ PostId: postId });
     } catch (error) {
       throw new HttpException(
-        'No se han podido eliminar los likes del post',
+        'There was an error deleting the post likes',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
