@@ -1,14 +1,27 @@
 import { Model } from 'mongoose';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  forwardRef,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { Post } from './schemas/post.schema';
 import { Query } from 'express-serve-static-core';
 import { paginate } from 'src/utils/paginate.utils';
+import { LikesService } from 'src/likes/likes.service';
+import { CommentsService } from 'src/comments/comments.service';
 @Injectable()
 export class PostsService {
-  constructor(@InjectModel(Post.name) private postModel: Model<Post>) {}
+  constructor(
+    @InjectModel(Post.name) private postModel: Model<Post>,
+    @Inject(forwardRef(() => LikesService)) private likesService: LikesService,
+    @Inject(forwardRef(() => CommentsService))
+    private commentsService: CommentsService,
+  ) {}
   // TODO
   // Ver las publicaciones de mis amigos
   // Buscar las publicaciones por una query o por texto
@@ -140,9 +153,12 @@ export class PostsService {
       );
     }
     try {
-      //todo Eliminar comentarios y likes asociados antes de eliminar el post
-      // await this.commentService.deleteCommentsByPostId(PostId);
-      // await this.likesService.deleteLikesByPostId(PostId);
+      // Se eliminan los comentarios y likes asociados al post antes de eliminar el post
+      const pruebaComment =
+        await this.commentsService.deleteCommentsByPostId(PostId);
+      console.log(pruebaComment);
+      const pruebaLike = await this.likesService.deleteLikesByPostId(PostId);
+      console.log(pruebaLike);
       await this.postModel.deleteOne({ _id: PostId });
       return `El post con id ${PostId} ha sido eliminado con éxito`;
     } catch (error) {

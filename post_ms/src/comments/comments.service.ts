@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  forwardRef,
+} from '@nestjs/common';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -13,7 +19,8 @@ import { paginate } from 'src/utils/paginate.utils';
 export class CommentsService {
   constructor(
     @InjectModel(Comment.name) private commentModel: Model<Comment>,
-    private readonly PostsService: PostsService,
+    @Inject(forwardRef(() => PostsService))
+    private readonly postsService: PostsService,
   ) {}
 
   async createComment(
@@ -21,7 +28,7 @@ export class CommentsService {
     UserId: string,
     PostId: string,
   ) {
-    const postFound = await this.PostsService.getOnePost(PostId);
+    const postFound = await this.postsService.getOnePost(PostId);
     if (!postFound) {
       throw new HttpException(
         'No se encuentra el post al que quiere comentar',
@@ -43,7 +50,7 @@ export class CommentsService {
 
   async getCommentsbyPost(page: Query, PostId: string) {
     const filter = { PostId: PostId };
-    const postFound = await this.PostsService.getOnePost(PostId);
+    const postFound = await this.postsService.getOnePost(PostId);
     console.log(postFound);
     if (!postFound) {
       throw new HttpException(
@@ -78,7 +85,7 @@ export class CommentsService {
     PostId: string,
     updateCommentDto: UpdateCommentDto,
   ) {
-    const postFound = await this.PostsService.getOnePost(PostId);
+    const postFound = await this.postsService.getOnePost(PostId);
     console.log(postFound, 'postfound');
     if (!postFound) {
       throw new HttpException(
@@ -108,7 +115,7 @@ export class CommentsService {
 
   async removeComment(CommentId: string, PostId: string) {
     const filter = { _id: CommentId };
-    const postFound = await this.PostsService.getOnePost(PostId);
+    const postFound = await this.postsService.getOnePost(PostId);
     console.log(postFound, 'postfound');
     if (!postFound) {
       throw new HttpException(
@@ -141,7 +148,7 @@ export class CommentsService {
 
   async deleteCommentsByPostId(postId: string) {
     try {
-      await this.commentModel.deleteMany({ postId });
+      await this.commentModel.deleteMany({ PostId: postId });
     } catch (error) {
       throw new HttpException(
         'No se han podido eliminar los comentarios del post',

@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  forwardRef,
+} from '@nestjs/common';
 import { CreateLikeDto } from './dto/create-like.dto';
 import { UpdateLikeDto } from './dto/update-like.dto';
 import { Like } from './schemas/like.schema';
@@ -14,7 +20,8 @@ export class LikesService {
   constructor(
     @InjectModel(Like.name)
     private likeModel: Model<Like>,
-    private readonly PostsService: PostsService,
+    @Inject(forwardRef(() => PostsService))
+    private readonly postsService: PostsService,
   ) {}
 
   async createLike(
@@ -23,7 +30,7 @@ export class LikesService {
     PostId: string,
   ) {
     const filter = { UserId: UserId, PostId: PostId };
-    const postFound = await this.PostsService.getOnePost(PostId);
+    const postFound = await this.postsService.getOnePost(PostId);
     if (!postFound) {
       throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
     }
@@ -49,7 +56,7 @@ export class LikesService {
 
   async getLikesbyPost(page: Query, PostId: string) {
     const filter = { PostId: PostId };
-    const postFound = await this.PostsService.getOnePost(PostId);
+    const postFound = await this.postsService.getOnePost(PostId);
     if (!postFound) {
       throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
     }
@@ -127,7 +134,7 @@ export class LikesService {
 
   async deleteLikesByPostId(postId: string) {
     try {
-      await this.likeModel.deleteMany({ postId });
+      await this.likeModel.deleteMany({ PostId: postId });
     } catch (error) {
       throw new HttpException(
         'No se han podido eliminar los likes del post',
