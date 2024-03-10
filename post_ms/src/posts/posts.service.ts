@@ -29,7 +29,7 @@ export class PostsService {
     } catch (error) {
       throw new HttpException(
         'No fue posible crear el post',
-        HttpStatus.NOT_FOUND,
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -51,15 +51,18 @@ export class PostsService {
       } else {
         throw new HttpException(
           'Hubo un error al buscar los post del usuario',
-          HttpStatus.NOT_FOUND,
+          HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
     }
   }
 
   async getOnePost(PostId: string) {
+    // const postFound = await this.postModel.find({ _id: PostId });
+    // console.log('Post found desde getonepost ', postFound);
     try {
-      const postFound = await this.postModel.find({ PostId: PostId });
+      const postFound = await this.postModel.find({ _id: PostId });
+      console.log('Post found desde getonepost ', postFound);
       if (postFound.length === 0) {
         throw new HttpException(
           'No se ha encontrado este post',
@@ -68,12 +71,18 @@ export class PostsService {
       }
       return postFound;
     } catch (error) {
+      console.log('Error desde getonepost ', error);
       if (error instanceof HttpException) {
         throw error;
+      } else if (error.name == 'CastError') {
+        throw new HttpException(
+          'El id del post no es válido',
+          HttpStatus.NOT_FOUND,
+        );
       } else {
         throw new HttpException(
           'Hubo un error al buscar el post',
-          HttpStatus.NOT_FOUND,
+          HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
     }
@@ -94,7 +103,7 @@ export class PostsService {
     } catch (error) {
       throw new HttpException(
         'Hubo un error modificando el post',
-        HttpStatus.NOT_FOUND,
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -116,7 +125,7 @@ export class PostsService {
       } else {
         throw new HttpException(
           'Hubo un error al buscar los posts del grupo',
-          HttpStatus.NOT_FOUND,
+          HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
     }
@@ -131,12 +140,15 @@ export class PostsService {
       );
     }
     try {
+      //todo Eliminar comentarios y likes asociados antes de eliminar el post
+      // await this.commentService.deleteCommentsByPostId(PostId);
+      // await this.likesService.deleteLikesByPostId(PostId);
       await this.postModel.deleteOne({ _id: PostId });
       return `El post con id ${PostId} ha sido eliminado con éxito`;
     } catch (error) {
       throw new HttpException(
         'No se ha podido elimnar el post',
-        HttpStatus.NOT_FOUND,
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
