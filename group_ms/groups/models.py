@@ -10,6 +10,7 @@ class Persons(models.Model):
 
 class Groups(models.Model):
     name = models.CharField(max_length=200)
+    photo = models.CharField(max_length=200)
     description = models.TextField()
     owner_id = models.ForeignKey(Persons, on_delete=models.CASCADE)
     in_requests = models.ManyToManyField(Persons, related_name='solicitudes')
