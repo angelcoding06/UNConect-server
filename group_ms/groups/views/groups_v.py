@@ -8,6 +8,7 @@ from groups.views.persons_v import getPerson
 # Importaciones
 from groups.models import Groups,Persons
 from groups.serializers.groups_s import  GroupsSerielizer
+from groups.serializers.persons_s import PersonsSerielizer
 
 #CRUD
 @api_view(['GET'])
@@ -110,7 +111,7 @@ def putGroup(request, pk):
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 # Metodos en constante uso
-#Agregar/eliminar solicitudes
+#Agregar Solicitudes
 @api_view(['POST'])
 def add_in_request(request, pk):
     try:
@@ -129,7 +130,7 @@ def add_in_request(request, pk):
     except Persons.DoesNotExist:
         return Response({'error': f'Person with ID {in_request_id} does not exist'}, status=status.HTTP_400_BAD_REQUEST)
 
-    # Verificar si el grupo es privado y si el miembro está en la lista de solicitudes
+    # Verificar si el grupo es privado 
     if not group.is_private:
         return Response({'error': 'Group is not private'}, status=status.HTTP_400_BAD_REQUEST)
         
@@ -145,7 +146,7 @@ def add_in_request(request, pk):
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-
+# Eliminar solicitudes
 @api_view(['DELETE'])
 def delete_in_request(request, group_id, in_request_id):
     try:
@@ -165,6 +166,17 @@ def delete_in_request(request, group_id, in_request_id):
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+#Obtener Solicitudes
+@api_view(['GET'])
+def get_in_request(request, group_id):
+    try:
+        group = Groups.objects.get(id=group_id)
+    except Groups.DoesNotExist:
+        return Response({'error': f'Group with ID {group_id} does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+    in_requests = group.in_requests.all()
+    serializer = PersonsSerielizer(in_requests, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 
@@ -228,6 +240,20 @@ def delete_member(request, group_id, member_id):
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+#Obtener Miembros
+@api_view(['GET'])
+def get_members(request, group_id):
+    try:
+        group = Groups.objects.get(id=group_id)
+    except Groups.DoesNotExist:
+        return Response({'error': f'Group with ID {group_id} does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+    members = group.members.all()
+    serializer = PersonsSerielizer(members, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
 #Agregar/eliminar Admin
 @api_view(['POST'])
 def add_admin(request, pk):
@@ -287,3 +313,28 @@ def delete_admin(request, group_id, admin_id):
         return Response(serializer.data, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+
+#Obtener Admins
+@api_view(['GET'])
+def get_admins(request, group_id):
+    try:
+        group = Groups.objects.get(id=group_id)
+    except Groups.DoesNotExist:
+        return Response({'error': f'Group with ID {group_id} does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+    admins = group.admins.all()
+    serializer = PersonsSerielizer(admins, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+#Obtener Grupo Por ID
+@api_view(['GET'])
+def get_group_by_id(request, group_id):
+    try:
+        group = Groups.objects.get(id=group_id)
+    except Groups.DoesNotExist:
+        return Response({'error': f'Group with ID {group_id} does not exist'}, status=status.HTTP_404_NOT_FOUND)
+    serializer = GroupsSerielizer(group, many=False)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
