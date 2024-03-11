@@ -35,5 +35,5 @@ def putPerson(request, pk):
 def deletePerson(request, pk):
     person = Persons.objects.get(id=pk)
     person.delete()
-    return Response('Persona Eliminada')
+    return Response({'message': f'Person with ID {pk} has been deleted'})
 

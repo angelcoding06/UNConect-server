@@ -11,7 +11,8 @@ class Persons(models.Model):
 class Groups(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField()
-    owner_id = models.OneToOneField(Persons, on_delete=models.CASCADE)
+    owner_id = models.ForeignKey(Persons, on_delete=models.CASCADE)
+    in_requests = models.ManyToManyField(Persons, related_name='solicitudes')
     members = models.ManyToManyField(Persons, related_name='miembros')
     admins = models.ManyToManyField(Persons, related_name='administradores')
     is_private = models.BooleanField()
