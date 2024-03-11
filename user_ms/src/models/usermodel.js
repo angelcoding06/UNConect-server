@@ -27,15 +27,27 @@ const User = sequelize.define('User', {
   },
   Campus: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
+    validate: {
+      isIn: {
+        args: [['Amazonía', 'Bogotá', 'Caribe', 'La Paz', 'Manizalez', 'Medellín', 'Orinoquia', 'Palmira', 'Tumaco']], // Aquí debes incluir los valores permitidos para el campo Career
+        msg: 'El campo Campus no admite ese valor' // Mensaje de error personalizado
+      }
+    }
   },
   Faculty: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
+    validate: {
+      isIn: {
+        args: [['AGRONOMÍA ', 'ARTES ', 'CIENCIAS', 'CIENCIAS AGRARIAS ', 'CIENCIAS ECONÓMICAS ', 'CIENCIAS HUMANAS ', 'DERECHO, CIENCIAS POLÍTICAS Y SOCIALES  ', 'ENFERMERÍA ', 'INGENIERÍA ', 'MEDICINA', 'MEDICINA VETERINARIA Y DE ZOOTECNIA ', 'ODONTOLOGÍA']], // Aquí debes incluir los valores permitidos para el campo Career
+        msg: 'El campo Faculty no admite ese valor' // Mensaje de error personalizado
+      }
+    }
   },
   Career: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
   },
   MemberUN_Since: {
     type: DataTypes.INTEGER,
