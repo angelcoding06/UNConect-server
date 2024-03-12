@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import com.social_network.authservice.entity.AuthUser;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -42,10 +43,32 @@ public class JwtProvider {
 		}
 	}
 
-	public String getEmailFromToken(String token) {
+	public String getSubjectFromToken(String token) {
+		try {
+			Claims claims = this.getPayloadFromToken(token);
+			if (claims != null)
+				return claims.getSubject();
+			return null;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public String getIdFromToken(String token) {
+		try {
+			Claims claims = this.getPayloadFromToken(token);
+			if (claims != null)
+				return (String) claims.get("id");
+			return null;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	private Claims getPayloadFromToken(String token) {
 		try {
 			return Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token)
-					.getBody().getSubject();
+					.getBody();
 		} catch (Exception e) {
 			return null;
 		}
