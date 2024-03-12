@@ -1,5 +1,6 @@
 package com.social_network.authservice.entity;
 
+import java.util.UUID;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,8 +18,8 @@ import lombok.NoArgsConstructor;
 public class AuthUser {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	@GeneratedValue(strategy = GenerationType.UUID)
+	private UUID id;
 	private String email;
 	private String password;
 	private boolean isVerified;
