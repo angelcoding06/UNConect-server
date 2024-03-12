@@ -1,8 +1,10 @@
 const express = require('express');
-const userroutes = express.Router();
+const userroutes = express.Router(); // Crea un enrutador para las rutas de usuarios
 
-// Controladores para manejar las operaciones CRUD de usuarios
+// Importa los controladores para manejar las operaciones CRUD de usuarios
 const UserController = require('../controllers/usercontroller');
+
+// Define las rutas para las operaciones CRUD relacionadas con usuarios
 
 // Ruta para obtener todos los usuarios
 userroutes.get('/', UserController.getAllUsers);
@@ -19,4 +21,4 @@ userroutes.put('/:id', UserController.updateUser);
 // Ruta para eliminar un usuario
 userroutes.delete('/:id', UserController.deleteUser);
 
-module.exports = userroutes;
+module.exports = userroutes; // Exporta las rutas de usuarios para su uso en otros archivos
