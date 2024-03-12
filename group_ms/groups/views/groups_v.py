@@ -31,6 +31,7 @@ def postGroup(request):
     try:
         group = Groups.objects.create(
             name=data['name'],
+            photo = data['photo'],
             description=data['description'],
             owner_id=owner_person,  
             is_private=data['is_private']  
