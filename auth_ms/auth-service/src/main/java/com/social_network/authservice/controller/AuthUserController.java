@@ -1,6 +1,7 @@
 package com.social_network.authservice.controller;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import com.social_network.authservice.dto.AuthUserDto;
 import com.social_network.authservice.dto.TokenDto;
 import com.social_network.authservice.entity.AuthUser;
@@ -45,11 +47,11 @@ public class AuthUserController {
 	}
 
 	@PostMapping("/validate")
-	public ResponseEntity<TokenDto> validate(@RequestParam String token) {
-		TokenDto tokenDto = authUserService.validate(token);
-		if (tokenDto == null)
+	public ResponseEntity<AuthUser> validate(@RequestParam String token) {
+		AuthUser user = authUserService.validate(token);
+		if (user == null)
 			return ResponseEntity.badRequest().build();
-		return ResponseEntity.ok(tokenDto);
+		return ResponseEntity.ok(user);
 	}
 
 	@PostMapping("/create")
@@ -68,18 +70,29 @@ public class AuthUserController {
 		return ResponseEntity.ok(authUser);
 	}
 
-
-	@PutMapping("/update/{id}")
-	public ResponseEntity<AuthUser> update(@PathVariable("id") int id,
-			@RequestBody AuthUserDto dto) {
-		AuthUser authUser = authUserService.update(id, dto);
+	@GetMapping("/get/{id}")
+	public ResponseEntity<AuthUser> getById(@PathVariable("id") UUID id) {
+		AuthUser authUser = authUserService.get(id);
 		if (authUser == null)
-			return ResponseEntity.badRequest().build();
+			return ResponseEntity.notFound().build();
 		return ResponseEntity.ok(authUser);
 	}
 
+
+	@PutMapping("/update/{id}")
+	public ResponseEntity<String> update(@PathVariable("id") UUID id,
+			@RequestBody AuthUserDto dto) {
+		try {
+			authUserService.update(id, dto);
+			return ResponseEntity.ok().build();
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(e.toString());
+		}
+
+	}
+
 	@PatchMapping("/update/{id}")
-	public ResponseEntity<AuthUser> updatePatch(@PathVariable("id") int id,
+	public ResponseEntity<AuthUser> updatePatch(@PathVariable("id") UUID id,
 			@RequestBody Map<Object, Object> fields) {
 		AuthUser authUser = authUserService.patchOne(id, fields);
 		if (authUser == null)
@@ -88,7 +101,7 @@ public class AuthUserController {
 	}
 
 	@DeleteMapping("/delete/{id}")
-	public ResponseEntity<AuthUser> delete(@PathVariable("id") int id) {
+	public ResponseEntity<AuthUser> delete(@PathVariable("id") UUID id) {
 		authUserService.delete(id);
 		return ResponseEntity.ok().build();
 	}

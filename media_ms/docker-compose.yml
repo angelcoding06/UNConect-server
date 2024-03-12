@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  unconnect_media_ms:
+    container_name: 'unconnect_media_ms'
+    build:
+      context: .
+    volumes:
+      - .:/usr/src/app # for hot-reloading
+      - ./uploads:/usr/src/media_ms/uploads
+
+      # - /usr/src/app/node_modules
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}
+      - 3022:3022
+    command: npm run start:debug
+    env_file:
+      - .env
+    depends_on:
+      - unconnect_media_db
+    links:
+      - unconnect_media_db
+
+  unconnect_media_db:
+    image: mongo:latest
+    container_name: 'unconnect_media_db'
+    volumes:
+      - mongodb_data_container:/data/db
+    env_file:
+      - .env
+    environment:
+      - MONGO_INITDB_DATABASE=${MONGO_DATABASE}
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+    ports:
+      - 27018:27017
+volumes:
+  mongodb_data_container:

@@ -3,6 +3,7 @@ package com.social_network.authservice.service;
 import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -43,22 +44,28 @@ public class AuthUserService {
 		return user.get();
 	}
 
-	public AuthUser update(int id, AuthUserDto dto) {
+	public AuthUser get(UUID id) {
+		Optional<AuthUser> user = authUserRepository.findById(id);
+		if (!user.isPresent())
+			return null;
+		return user.get();
+	}
+
+	public void update(UUID id, AuthUserDto dto) throws Exception {
 		Optional<AuthUser> user = authUserRepository.findById(id);
 		if (!user.isPresent()) {
-			return null;
+			throw new Exception("Nonexistent user");
 		}
 		AuthUser userToUpdate = user.get();
 		boolean emailExists = authUserRepository.findByEmail(dto.getEmail()).isPresent();
 		if (emailExists && !dto.getEmail().equals(userToUpdate.getEmail()))
-			return null;
+			throw new Exception("email is already used");
 		String password = passwordEncoder.encode(dto.getPassword());
 		authUserRepository.updateById(dto.getEmail(), password, dto.isVerified(), dto.getRole(),
 				id);
-		return get(dto);
 	}
 
-	public AuthUser patchOne(int id, Map<Object, Object> fields) {
+	public AuthUser patchOne(UUID id, Map<Object, Object> fields) {
 		Optional<AuthUser> user = authUserRepository.findById(id);
 		if (user.isPresent()) {
 			fields.forEach((key, value) -> {
@@ -78,12 +85,12 @@ public class AuthUserService {
 				ReflectionUtils.setField(field, user.get(), value);
 				field.setAccessible(false);
 			});
-			return authUserRepository.save(authUserRepository.save(user.get()));
+			return authUserRepository.save(user.get());
 		}
 		return null;
 	}
 
-	public void delete(int id) {
+	public void delete(UUID id) {
 		authUserRepository.deleteById(id);
 	}
 
@@ -96,13 +103,14 @@ public class AuthUserService {
 		return null;
 	}
 
-	public TokenDto validate(String token) {
+	public AuthUser validate(String token) {
 		if (!jwtProvider.validate(token))
 			return null;
-		String email = jwtProvider.getEmailFromToken(token);
-		if (!authUserRepository.findByEmail(email).isPresent())
+		UUID id = UUID.fromString(jwtProvider.getIdFromToken(token));
+		Optional<AuthUser> user = authUserRepository.findById(id);
+		if (!user.isPresent())
 			return null;
-		return new TokenDto(token);
+		return user.get();
 	}
 
 	private boolean emailIsAlreadyUsed(String email) {
