@@ -1,6 +1,7 @@
 package com.social_network.authservice.entity;
 
 import java.util.UUID;
+import com.social_network.authservice.dto.AuthUserResponseDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,4 +25,8 @@ public class AuthUser {
 	private String password;
 	private boolean isVerified;
 	private Role role;
+
+	public AuthUserResponseDto toAuthUserResponseDto() {
+		return new AuthUserResponseDto(this.email, this.isVerified, this.role);
+	}
 }
