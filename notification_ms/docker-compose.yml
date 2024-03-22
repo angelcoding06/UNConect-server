@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  unconnect_notification_ms:
+    container_name: 'unconnect_notification_ms'
+    build:
+      context: .
+    ports:
+      - 8080:8080
+    command: ./main
+    env_file:
+      - environment.env
