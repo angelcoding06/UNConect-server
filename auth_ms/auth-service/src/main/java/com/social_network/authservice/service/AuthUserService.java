@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
-import com.social_network.authservice.dto.AuthUserDto;
+import com.social_network.authservice.dto.AuthUserRequestDto;
 import com.social_network.authservice.dto.TokenDto;
 import com.social_network.authservice.entity.AuthUser;
 import com.social_network.authservice.entity.Role;
@@ -27,7 +27,7 @@ public class AuthUserService {
 	@Autowired
 	JwtProvider jwtProvider;
 
-	public AuthUser save(AuthUserDto dto) {
+	public AuthUser save(AuthUserRequestDto dto) {
 		Optional<AuthUser> user = authUserRepository.findByEmail(dto.getEmail());
 		if (user.isPresent())
 			return null;
@@ -37,7 +37,7 @@ public class AuthUserService {
 		return authUserRepository.save(authUser);
 	}
 
-	public AuthUser get(AuthUserDto dto) {
+	public AuthUser get(AuthUserRequestDto dto) {
 		Optional<AuthUser> user = authUserRepository.findByEmail(dto.getEmail());
 		if (!user.isPresent())
 			return null;
@@ -51,7 +51,7 @@ public class AuthUserService {
 		return user.get();
 	}
 
-	public void update(UUID id, AuthUserDto dto) throws Exception {
+	public void update(UUID id, AuthUserRequestDto dto) throws Exception {
 		Optional<AuthUser> user = authUserRepository.findById(id);
 		if (!user.isPresent()) {
 			throw new Exception("Nonexistent user");
@@ -94,7 +94,7 @@ public class AuthUserService {
 		authUserRepository.deleteById(id);
 	}
 
-	public TokenDto login(AuthUserDto dto) {
+	public TokenDto login(AuthUserRequestDto dto) {
 		Optional<AuthUser> user = authUserRepository.findByEmail(dto.getEmail());
 		if (!user.isPresent())
 			return null;

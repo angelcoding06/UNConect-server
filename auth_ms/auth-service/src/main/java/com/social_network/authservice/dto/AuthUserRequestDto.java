@@ -10,9 +10,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
-public class AuthUserDto {
+public class AuthUserRequestDto {
 	private String email;
 	private String password;
 	private boolean isVerified;
 	private Role role;
 }
+
+
