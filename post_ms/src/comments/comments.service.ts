@@ -60,6 +60,12 @@ export class CommentsService {
 
     try {
       const comments = await paginate(this.commentModel, page, filter);
+      if (page > comments.totalPages) {
+        throw new HttpException(
+          'The page number requested is greater than the total number of pages',
+          HttpStatus.NOT_FOUND,
+        );
+      }
       if (comments.items.length === 0) {
         throw new HttpException(
           'There were no comments found for this post',

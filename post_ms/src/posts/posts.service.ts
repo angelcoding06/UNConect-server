@@ -51,6 +51,12 @@ export class PostsService {
     const filters = { UserId: UserId, GroupId: GroupId || null };
     try {
       const userPosts = await paginate(this.postModel, page, filters);
+      if (page > userPosts.totalPages) {
+        throw new HttpException(
+          'The page number requested is greater than the total number of pages',
+          HttpStatus.NOT_FOUND,
+        );
+      }
       if (userPosts.items.length === 0) {
         throw new HttpException(
           'No posts were found for this user',
@@ -121,6 +127,12 @@ export class PostsService {
     const filter = { GroupId: GroupId };
     try {
       const groupPosts = await paginate(this.postModel, page, filter);
+      if (page > groupPosts.totalPages) {
+        throw new HttpException(
+          'The page number requested is greater than the total number of pages',
+          HttpStatus.NOT_FOUND,
+        );
+      }
       if (groupPosts.items.length === 0) {
         throw new HttpException(
           'No posts found for this group',
