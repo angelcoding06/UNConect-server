@@ -127,7 +127,7 @@ export class PostsService {
     const filter = { GroupId: GroupId };
     try {
       const groupPosts = await paginate(this.postModel, page, filter);
-      if (page > groupPosts.totalPages) {
+      if (page > groupPosts.totalPages && groupPosts.totalPages !== 0) {
         throw new HttpException(
           'The page number requested is greater than the total number of pages',
           HttpStatus.NOT_FOUND,
