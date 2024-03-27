@@ -1,74 +1,74 @@
 version: '3.9'
 
 services:
-  # unconnect_posts_ms:
-  #   container_name: 'unconnect_posts_ms'
-  #   build:
-  #     context: ./post_ms/
-  #   ports:
-  #     - ${SERVER_PORT}:${SERVER_PORT}
-  #     - 3021:3021
-  #   command: npm run start:debug
-  #   env_file: ./post_ms/.env
-  #   depends_on:
-  #     - unconnect_posts_db
-  #   links:
-  #     - unconnect_posts_db
-  # unconnect_posts_db:
-  #   image: mongo:latest
-  #   container_name: 'unconnect_posts_db'
-  #   volumes:
-  #     - mongodb_data_container:/data/db
-  #   env_file:
-  #     - .env
-  #   environment:
-  #     - MONGO_INITDB_DATABASE=${MONGO_DATABASE}
-  #     - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
-  #     - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
-  #   ports:
-  #     - ${MONGO_PORT}:${MONGO_PORT}
+  unconnect_posts_ms:
+    container_name: 'unconnect_posts_ms'
+    build:
+      context: ./post_ms/
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}
+      - 3021:3021
+    command: npm run start:debug
+    env_file: ./post_ms/.env
+    depends_on:
+      - unconnect_posts_db
+    links:
+      - unconnect_posts_db
+  unconnect_posts_db:
+    image: mongo:latest
+    container_name: 'unconnect_posts_db'
+    volumes:
+      - mongodb_data_container:/data/db
+    env_file:
+      - .env
+    environment:
+      - MONGO_INITDB_DATABASE=${MONGO_DATABASE}
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+    ports:
+      - ${MONGO_PORT}:${MONGO_PORT}
 
-  # unconnect_media_ms:
-  #   container_name: 'unconnect_media_ms'
-  #   build:
-  #     context: ./media_ms/
-  #   volumes:
-  #     - ./media_ms/uploads:/usr/src/media_ms/uploads
-  #   ports:
-  #     - ${SERVER_PORT_MEDIA}:${SERVER_PORT_MEDIA}
-  #     - 3022:3022
-  #   command: npm run start:debug
-  #   env_file:
-  #     - .env
-  #   depends_on:
-  #     - unconnect_media_db
-  #   links:
-  #     - unconnect_media_db
-  # unconnect_media_db:
-  #   image: mongo:latest
-  #   container_name: 'unconnect_media_db'
-  #   volumes:
-  #     - mongodb_data_container_media:/data/db
-  #   env_file:
-  #     - .env
-  #   environment:
-  #     - MONGO_INITDB_DATABASE=${MONGO_DATABASE_MEDIA}
-  #     - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME_MEDIA}
-  #     - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD_MEDIA}
-  #   ports:
-  #     - 27018:27017
+  unconnect_media_ms:
+    container_name: 'unconnect_media_ms'
+    build:
+      context: ./media_ms/
+    volumes:
+      - ./media_ms/uploads:/usr/src/media_ms/uploads
+    ports:
+      - ${SERVER_PORT_MEDIA}:${SERVER_PORT_MEDIA}
+      - 3022:3022
+    command: npm run start:debug
+    env_file:
+      - .env
+    depends_on:
+      - unconnect_media_db
+    links:
+      - unconnect_media_db
+  unconnect_media_db:
+    image: mongo:latest
+    container_name: 'unconnect_media_db'
+    volumes:
+      - mongodb_data_container_media:/data/db
+    env_file:
+      - .env
+    environment:
+      - MONGO_INITDB_DATABASE=${MONGO_DATABASE_MEDIA}
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME_MEDIA}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD_MEDIA}
+    ports:
+      - 27018:27017
 
-  # unconnect_ag:
-  #   container_name: unconnect_ag
-  #   build:
-  #     context: ./api_gateway/
-  #   ports:
-  #     - 8000:8000
-  #   environment:
-  #     PORT: 8000
-  #   command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-  #   links:
-  #   - unconnect_posts_ms
+  unconnect_ag:
+    container_name: unconnect_ag
+    build:
+      context: ./api_gateway/
+    ports:
+      - 8000:8000
+    environment:
+      PORT: 8000
+    command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+    links:
+    - unconnect_posts_ms
   
   unconnect_auth_ms:
     container_name: unconnect_auth_ms
