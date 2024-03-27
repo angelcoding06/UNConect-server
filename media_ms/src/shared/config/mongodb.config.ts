@@ -8,7 +8,7 @@ export default registerAs('mongodb', () => {
     MONGO_USERNAME,
     MONGO_PASSWORD,
   } = process.env;
-  // const uri = `mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DATABASE}?retryWrites=true&w=majority`;
-  const uri = 'mongodb://mediauser:password@localhost:27018/mediaDB';
+  const uri = `mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DATABASE}?retryWrites=true&w=majority`;
+  // const uri = 'mongodb://mediauser:password@localhost:27018/mediaDB';
   return { uri };
 });
