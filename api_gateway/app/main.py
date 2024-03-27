@@ -1,8 +1,7 @@
-from typing import Union
 import strawberry
 from fastapi import FastAPI
 from strawberry.fastapi import GraphQLRouter
-from app.posts.post_schema import Query as PostQuery
+from app.post_ms.posts.post_schema import Query as PostQuery
 
 @strawberry.type
 class HelloQuery:
