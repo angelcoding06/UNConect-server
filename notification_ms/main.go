@@ -69,7 +69,7 @@ func sendNotificationHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func sendNotification(senderID, receiverID int, token, title, body, notificationType, deepLink string) error {
-	err := godotenv.Load("C:/Users/fhcha/OneDrive/Documentos/UNConnect/Notificaciones/environment.env")
+	err := godotenv.Load("./environment.env")
 	if err != nil {
 		// Manejar el error si no se puede cargar el archivo
 		panic("Error loading environment file")
@@ -252,7 +252,7 @@ func sendGroupRequestAcceptNotification(w http.ResponseWriter, r *http.Request) 
 }
 
 func handleUserPreferences(w http.ResponseWriter, r *http.Request) {
-	err := godotenv.Load("C:/Users/fhcha/OneDrive/Documentos/UNConnect/Notificaciones/environment.env")
+	err := godotenv.Load("./environment.env")
 	if err != nil {
 		http.Error(w, "Error al cargar el archivo de entorno", http.StatusInternalServerError)
 		return
@@ -390,7 +390,7 @@ func deletePreferences(client *firestore.Client, ctx context.Context, receiverID
 }
 
 func handleUserDevices(w http.ResponseWriter, r *http.Request) {
-	err := godotenv.Load("C:/Users/fhcha/OneDrive/Documentos/UNConnect/Notificaciones/environment.env")
+	err := godotenv.Load("./environment.env")
 	if err != nil {
 		http.Error(w, "Error al cargar el archivo de entorno", http.StatusInternalServerError)
 		return
