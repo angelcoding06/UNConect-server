@@ -2,6 +2,7 @@ import strawberry
 from fastapi import FastAPI
 from strawberry.fastapi import GraphQLRouter
 from app.post_ms.posts.post_schema import Query as PostQuery
+from app.post_ms.posts.post_schema import Mutation as PostMutation
 
 @strawberry.type
 class HelloQuery:
@@ -13,7 +14,11 @@ class HelloQuery:
 class Query(HelloQuery,PostQuery):
     pass
 
-schema = strawberry.Schema(Query)
+@strawberry.type
+class Mutation(PostMutation):
+    pass
+
+schema = strawberry.Schema(query=Query, mutation=Mutation)
 graphql_app = GraphQLRouter(schema)
 
 app = FastAPI()
