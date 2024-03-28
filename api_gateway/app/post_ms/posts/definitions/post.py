@@ -16,4 +16,4 @@ class paginatedPosts:
     currentPage: int
     totalPages: int
     totalCount: int
-    items: typing.List[PostClass] #TODO Procesar el __v
+    items: typing.List[PostClass]
