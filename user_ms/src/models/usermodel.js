@@ -2,6 +2,7 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = require('../database').sequelize; // Importa la instancia de Sequelize configurada
 const { v4: uuidv4 } = require('uuid');
+const parsePhoneNumber = require('libphonenumber-js').parsePhoneNumberFromString;
 
 // Define el modelo User utilizando Sequelize
 const User = sequelize.define('User', {
@@ -42,7 +43,7 @@ const User = sequelize.define('User', {
     allowNull: false, // No permite valores nulos
     validate: {
       isIn: { // Validación para asegurar que el valor esté dentro de una lista específica
-        args: [['AGRONOMÍA ', 'ARTES ', 'CIENCIAS', 'CIENCIAS AGRARIAS ', 'CIENCIAS ECONÓMICAS ', 'CIENCIAS HUMANAS ', 'DERECHO, CIENCIAS POLÍTICAS Y SOCIALES  ', 'ENFERMERÍA ', 'INGENIERÍA ', 'MEDICINA', 'MEDICINA VETERINARIA Y DE ZOOTECNIA ', 'ODONTOLOGÍA']],
+        args: [['AGRONOMÍA', 'ARTES', 'CIENCIAS', 'CIENCIAS AGRARIAS', 'CIENCIAS ECONÓMICAS', 'CIENCIAS HUMANAS', 'DERECHO, CIENCIAS POLÍTICAS Y SOCIALES', 'ENFERMERÍA', 'INGENIERÍA', 'MEDICINA', 'MEDICINA VETERINARIA Y DE ZOOTECNIA', 'ODONTOLOGÍA']],
         msg: 'El campo Faculty no admite ese valor' // Mensaje de error personalizado si la validación falla
       }
     }
@@ -59,8 +60,16 @@ const User = sequelize.define('User', {
     }
   },
   Phone_Number: {
-    type: DataTypes.INTEGER, // Tipo de datos INTEGER para el número de teléfono
-    allowNull: false // No permite valores nulos
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      isValidPhoneNumber(value) {
+        const phoneNumber = parsePhoneNumber(value, 'CO'); // Cambia 'US' al código de país correspondiente
+        if (!phoneNumber || !phoneNumber.isValid()) {
+          throw new Error('Número de teléfono no válido');
+        }
+      }
+    },
   },
   Gender: {
     type: DataTypes.STRING, // Tipo de datos STRING para el género

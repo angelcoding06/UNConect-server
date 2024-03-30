@@ -13,11 +13,11 @@ const Friendship = sequelize.define('Friendship', {
     primaryKey: true // Define la clave primaria
   },
   senderId: {
-    type: DataTypes.INTEGER, // Tipo de datos INTEGER para el ID del remitente
+    type: DataTypes.STRING, // Tipo de datos INTEGER para el ID del remitente
     allowNull: false, // No permite valores nulos
   },
   receiverId: {
-    type: DataTypes.INTEGER, // Tipo de datos INTEGER para el ID del receptor
+    type: DataTypes.STRING, // Tipo de datos INTEGER para el ID del receptor
     allowNull: false, // No permite valores nulos
   },
   status: {

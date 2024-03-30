@@ -1,6 +1,6 @@
 // Importa el modelo de friend
 const Friendship = require('../models/friendsmodel');
-const { sequelize } = require('sequelize'); // Importa el operador de Sequelize
+const sequelize = require('../database').sequelize;// Importa el operador de Sequelize
 
 // Función para enviar una solicitud de amistad
 exports.sendFriendRequest = async (req, res, next) => {
@@ -10,6 +10,7 @@ exports.sendFriendRequest = async (req, res, next) => {
     // Crea una nueva solicitud de amistad en la base de datos
     const friendship = await Friendship.create({ senderId, receiverId });
     // Devuelve la solicitud creada como respuesta
+    console.log(friendship);
     res.status(201).json(friendship);
   } catch (error) {
     console.error("Error en sendFriendRequest:", error);
