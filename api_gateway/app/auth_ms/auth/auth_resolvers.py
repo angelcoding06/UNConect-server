@@ -3,7 +3,7 @@ from app.auth_ms.auth.definitions.auth import AuthClass, TokenClass, Role
 from strawberry.exceptions import GraphQLError
 from app.auth_ms.const import AUTH_MS_URL
 from typing import Optional
-
+import json
 URL = f"{AUTH_MS_URL}/auth"
 
 
@@ -48,21 +48,20 @@ def login(email: str, password: str) -> TokenClass:
 
 
 def register(email: str, password: str, role: Role) -> AuthClass:
-    print(email, password, role.name)
-    try:
-        json_obj = {"email": email, "password": password, "role": role.name}
-        print(json_obj)
-        # res = requests.get(f"{URL}/hi")
-        # print("res: ->>>>>>", res.text)
-        response = requests.post(f"{URL}", json=json_obj)
-        print(response.status_code)
-        # print("aqui2")
-        if response.status_code == 400:
-            raise GraphQLError(str(response.json()))
-        # print("aqui3")
-        auth = response.json()
 
-        return jsonToAuthClass(auth)
+    try:
+        json_obj = {"email": email,  "role": role.name,"password": password}
+
+        response = requests.post(f"{URL}", json=json_obj)
+
+        if response.status_code != 200:
+            raise GraphQLError(str(response.text))
+
+        data = response.text
+        data = json.loads(data)
+        auth = AuthClass(**data)
+        auth.role = Role[auth.role]
+        return auth
     except ValueError as error:  # Bad format
         raise GraphQLError(str(error))
     except requests.RequestException as error:  # net errors
