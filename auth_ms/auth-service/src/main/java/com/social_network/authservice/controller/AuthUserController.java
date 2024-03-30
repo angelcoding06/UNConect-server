@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 
 @RestController
+@PreAuthorize("permitAll()")
 @RequestMapping("/auth")
 public class AuthUserController {
 
@@ -31,6 +33,11 @@ public class AuthUserController {
 
 	@Autowired
 	AuthUserService authUserService;
+
+	@GetMapping("/hi")
+	public ResponseEntity<String> get() {
+		return ResponseEntity.ok("hello");
+	}
 
 	@PostMapping("/login")
 	public ResponseEntity<TokenDto> login(@RequestBody AuthUserRequestDto dto) {
@@ -49,11 +56,11 @@ public class AuthUserController {
 	}
 
 	@PostMapping()
-	public ResponseEntity<AuthUser> save(@RequestBody AuthUserRequestDto dto) {
+	public ResponseEntity<AuthUserResponseDto> save(@RequestBody AuthUserRequestDto dto) {
 		AuthUser authUser = authUserService.save(dto);
 		if (authUser == null)
 			return ResponseEntity.badRequest().build();
-		return ResponseEntity.ok(authUser);
+		return ResponseEntity.ok(authUser.toAuthUserResponseDto());
 	}
 
 	@GetMapping()
@@ -86,12 +93,12 @@ public class AuthUserController {
 	}
 
 	@PatchMapping("/{id}")
-	public ResponseEntity<AuthUser> updatePatch(@PathVariable("id") UUID id,
+	public ResponseEntity<AuthUserResponseDto> updatePatch(@PathVariable("id") UUID id,
 			@RequestBody Map<Object, Object> fields) {
 		AuthUser authUser = authUserService.patchOne(id, fields);
 		if (authUser == null)
 			return ResponseEntity.badRequest().build();
-		return ResponseEntity.ok(authUser);
+		return ResponseEntity.ok(authUser.toAuthUserResponseDto());
 	}
 
 	@DeleteMapping("/{id}")
