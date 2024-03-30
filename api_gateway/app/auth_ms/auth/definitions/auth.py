@@ -5,7 +5,7 @@ from enum import Enum
 
 @strawberry.enum
 class Role(Enum):
-    ADMIN = "admin"
+    ADMIN = "ADMIN"
     USUARIO_REGULAR = "usuario_regular"
     MODERADOR = "moderador"
     SUPERUSUARIO = "SUPERUSUARIO"
@@ -15,7 +15,7 @@ class Role(Enum):
 class AuthClass:  # Aply to get_one_post
     id: str
     email: str
-    isVerified: bool
+    verified: bool
     role: Role
 
 

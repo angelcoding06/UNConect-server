@@ -14,7 +14,8 @@ class Mutation:
     createAuthUser: AuthClass = strawberry.field(resolver=register)
     validateAuthUser: AuthClass = strawberry.field(resolver=validate)
     loginAuthUser: TokenClass = strawberry.field(resolver=login)
-    updateAuthUser = strawberry.field(resolver=update)
-    partialUpdateAuthUser = strawberry.field(resolver=partial_update)
-    deleteAuthUser = strawberry.field(resolver=delete)
+    updateAuthUser: str = strawberry.field(resolver=update)
+    partialUpdateAuthUser: AuthClass = strawberry.field(
+        resolver=partial_update)
+    deleteAuthUser: str = strawberry.field(resolver=delete)
     # metodos post, update, delete, etc
