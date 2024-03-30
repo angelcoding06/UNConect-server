@@ -18,4 +18,7 @@ friendsroutes.put('/reject', FriendController.rejectRequest);
 // Ruta para obtener la lista de amigos de un usuario
 friendsroutes.get('/:userId', FriendController.getFriends);
 
+// Ruta para obtener la lista de amigos de un usuario
+friendsroutes.delete('/:friendshipId', FriendController.deleteFriend);
+
 module.exports = friendsroutes; // Exporta las rutas de amigos para su uso en otros archivos

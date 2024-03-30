@@ -1,6 +1,7 @@
 // Importa el modelo de friend
 const Friendship = require('../models/friendsmodel');
 const sequelize = require('../database').sequelize;// Importa el operador de Sequelize
+const { Sequelize } = require('sequelize');
 
 // Función para enviar una solicitud de amistad
 exports.sendFriendRequest = async (req, res, next) => {
@@ -79,15 +80,18 @@ exports.rejectRequest = async (req, res, next) => {
 // Función para obtener los amigos de un usuario
 exports.getFriends = async (req, res, next) => {
   const { userId } = req.params; // Obtiene el ID del usuario
+  console.log(userId);
+  
 
-  try {
+  try{
     // Busca todas las solicitudes de amistad aceptadas donde el usuario es el remitente o el receptor
     const friends = await Friendship.findAll({
       where: {
-        [sequelize.or]: [
-          { senderId: userId, status: 'accepted' },
-          { receiverId: userId, status: 'accepted' }
-        ]
+        [Sequelize.Op.or]: [
+          { senderId: userId },
+          { receiverId: userId }
+        ],
+        status: 'accepted',
       }
     });
 
@@ -100,6 +104,29 @@ exports.getFriends = async (req, res, next) => {
     res.status(200).json({ friendIds });
   } catch (error) {
     console.error("Error en getFriends:", error);
+    next(error); // Pasa cualquier error al siguiente middleware
+  }
+};
+
+exports.deleteFriend = async (req, res, next) => {
+  const { friendshipId } = req.params; // Obtener el ID de la amistad a eliminar
+  
+  try {
+    // Buscar la amistad por su ID
+    const friendship = await Friendship.findByPk(friendshipId);
+    
+    // Verificar si la amistad existe
+    if (!friendship) {
+      return res.status(404).json({ message: 'La amistad no existe' });
+    }
+    
+    // Eliminar la amistad
+    await friendship.destroy();
+    
+    // Respuesta exitosa
+    res.status(200).json({ message: 'Amistad eliminada exitosamente' });
+  } catch (error) {
+    console.error("Error al eliminar la amistad:", error);
     next(error); // Pasa cualquier error al siguiente middleware
   }
 };
