@@ -54,14 +54,14 @@ async def root():
 
 
 @app.post("/upload-file/")
-def upload_file(files: typing.List[UploadFile]):
+def upload_file(files: typing.List[UploadFile],UserId:str):
     print(files)
     files_data = []
     for file in files:
         file_data = ("files", (file.filename, file.file.read(), file.content_type))
         files_data.append(file_data)
 
-    response = requests.post(f"{MEDIA_MS_URL}/media/file", files=files_data, headers={"UserId": "1"})
+    response = requests.post(f"{MEDIA_MS_URL}/media/file", files=files_data, headers={"UserId": UserId})
     print(response)
     print(response.text)
     print(response.json())
@@ -80,7 +80,7 @@ def get_file(file_id: str):
         raise HTTPException(status_code=response.status_code, detail="Failed to fetch file")
     
 @app.delete("/delete-file/")
-def delete_file(file_id: str):
+def delete_file(file_id: str, UserId:str):
     response = requests.delete(f"{MEDIA_MS_URL}/media/{file_id}")
     if response.status_code == 200:
         return JSONResponse(content={"message": "File deleted successfully"})
