@@ -1,7 +1,7 @@
 import requests
 from app.post_ms.posts.definitions.post import PostClass, paginatedPosts
 from strawberry.exceptions import GraphQLError
-from app.post_ms.const import POST_MS_URL
+from app.const import POST_MS_URL
 import typing
 
 def get_one_post(postId: str) -> PostClass:

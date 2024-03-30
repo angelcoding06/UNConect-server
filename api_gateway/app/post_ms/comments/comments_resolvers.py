@@ -1,11 +1,11 @@
 import requests
 from app.post_ms.comments.definitions.comments import CommentClass, paginatedComments
 from strawberry.exceptions import GraphQLError
-from app.post_ms.const import POST_MS_URL
+from app.const import POST_MS_URL
 
 def get_comment_by_post(PostId:str,page:int) -> paginatedComments:
     try:
-        response = requests.get(f"http://localhost:3001/comments/?page={page}",headers={"PostId":f"{PostId}"})
+        response = requests.get(f"{POST_MS_URL}/comments/?page={page}",headers={"PostId":f"{PostId}"})
         print(response)
         print(response.json())
         print(response.text)
@@ -29,7 +29,7 @@ def get_comment_by_post(PostId:str,page:int) -> paginatedComments:
 
 def create_comment(UserId:str ,PostId:str, Content:str) -> CommentClass:
     try:
-        response = requests.post(f"http://localhost:3001/comments", headers = {"UserId":UserId, "PostId":PostId}, json = {"Content":Content})
+        response = requests.post(f"{POST_MS_URL}/comments", headers = {"UserId":UserId, "PostId":PostId}, json = {"Content":Content})
         print(response.json())
         if response.status_code == 404:
             raise GraphQLError(str(response.json()))
@@ -48,7 +48,7 @@ def create_comment(UserId:str ,PostId:str, Content:str) -> CommentClass:
 
 def edit_comment(UserId:str ,PostId:str, Content:str, CommentId:str) -> CommentClass:
     try:
-        response = requests.patch(f"http://localhost:3001/comments", headers = {"CommentId":CommentId, "PostId": PostId}, json = {"Content":Content})
+        response = requests.patch(f"{POST_MS_URL}/comments", headers = {"CommentId":CommentId, "PostId": PostId}, json = {"Content":Content})
         print(response.json())
         if response.status_code != 200:
             raise GraphQLError(str(response.json()))
@@ -65,7 +65,7 @@ def edit_comment(UserId:str ,PostId:str, Content:str, CommentId:str) -> CommentC
     
 def delete_comment(UserId:str ,PostId:str, CommentId:str) -> str:
     try:
-        response = requests.delete(f"http://localhost:3001/comments", headers = {"PostId":PostId,"CommentId":CommentId})
+        response = requests.delete(f"{POST_MS_URL}/comments", headers = {"PostId":PostId,"CommentId":CommentId})
         if response.status_code != 200:
             raise GraphQLError(str(response.json()))
         return response.text
