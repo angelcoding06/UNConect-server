@@ -11,8 +11,8 @@ const Friends = require('./models/friendsmodel'); // Importa el modelo de amigos
 async function authenticateDatabase() {
   try {
     await sequelize.authenticate(); // Autentica la conexión a la base de datos
-    await User.sync({ force: false }); // Sincroniza el modelo de usuario con la base de datos
-    await Friends.sync({ force: false }); // Sincroniza el modelo de amigos con la base de datos
+    await User.sync({ force: true }); // Sincroniza el modelo de usuario con la base de datos
+    await Friends.sync({ force: true }); // Sincroniza el modelo de amigos con la base de datos
     console.log('Database connection established and models synced successfully'); // Muestra un mensaje de éxito en la consola
   } catch (error) {
     console.error('Error connecting to database and syncing models:', error); // Muestra un mensaje de error si falla la conexión o sincronización
