@@ -56,22 +56,6 @@ services:
   #     - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD_MEDIA}
   #   ports:
   #     - 27018:27017
-
-  unconnect_ag:
-    container_name: unconnect_ag
-    build:
-      context: ./api_gateway/
-    ports:
-      - 8000:8000
-    environment:
-      PORT: 8000
-    command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-    links:
-      - unconnect_group_ms
-      # - unconnect_posts_ms
-      # - unconnect_media_ms
-      # - unconnect_auth_ms
-
   # unconnect_auth_ms:
   #   container_name: unconnect_auth_ms
   #   image: unconnect_auth_ms_image
@@ -89,7 +73,6 @@ services:
   #   links:
   #     - mysqldb
   #   restart: on-failure
-
   # mysqldb:
   #   container_name: mysqldb
   #   image: mysql
@@ -98,21 +81,65 @@ services:
   #     - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
   #     - MYSQL_DATABASE=${MYSQL_DATABASE}
   #   volumes:
-  #     - mysql_data_container_auth:/var/lib/mysql
+  #     - mysql_data_container_auth:/var/lib/mysq
+  # unconnect_group_ms:
+  #   container_name: 'unconnect_group_ms'
+  #   build:
+  #     context: ./group_ms/
+  #   ports:
+  #     - 8001:8001
+  #   volumes:
+  #     - ./group_ms/db.sqlite3:/app/db.sqlite3
+  #   environment:
+  #     - DJANGO_SETTINGS_MODULE=group_ms.settings
+  #     - PYTHONUNBUFFERED=1
+  #   command: python manage.py runserver 0.0.0.0:8001
+  #   depends_on:
+  #     - unconnect_ag
 
-  unconnect_group_ms:
-    container_name: 'unconnect_group_ms'
+  
+  # unconnect_ag:
+  #   container_name: unconnect_ag
+  #   build:
+  #     context: ./api_gateway/
+  #   ports:
+  #     - 8000:8000
+  #   environment:
+  #     PORT: 8000
+  #   command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+  #   links:
+  #     - unconnect_users_ms
+  #     # - unconnect_group_ms
+  #     # - unconnect_posts_ms
+  #     # - unconnect_media_ms
+  #     # - unconnect_auth_ms
+
+  unconnect_users_ms:
+    container_name: "unconnect_users_ms"
     build:
-      context: ./group_ms/
+      context: ./user_ms/
     ports:
-      - 8001:8001
+      - 3003:3003
+    command: npm start
+    depends_on:
+      - unconnect_users_db
+    links:
+      - unconnect_users_db
+
+  unconnect_users_db:
+    image: postgres:latest
+    container_name: "unconnect_users_db"
     volumes:
-      - ./group_ms/db.sqlite3:/app/db.sqlite3
+      - postgres_data:/var/lib/postgresql/data
     environment:
-      - DJANGO_SETTINGS_MODULE=group_ms.settings
-      - PYTHONUNBUFFERED=1
-    command: python manage.py runserver 0.0.0.0:8001
-# volumes:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: usersdb
+    ports:
+      - "5432:5432"
+
+volumes:
 # mongodb_data_container:
 # mongodb_data_container_media:
 # mysql_data_container_auth:
+  postgres_data:

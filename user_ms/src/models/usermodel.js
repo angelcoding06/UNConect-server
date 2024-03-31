@@ -42,7 +42,7 @@ const User = sequelize.define('User', {
     allowNull: false, // No permite valores nulos
     validate: {
       isIn: { // Validación para asegurar que el valor esté dentro de una lista específica
-        args: [['AGRONOMÍA ', 'ARTES ', 'CIENCIAS', 'CIENCIAS AGRARIAS ', 'CIENCIAS ECONÓMICAS ', 'CIENCIAS HUMANAS ', 'DERECHO, CIENCIAS POLÍTICAS Y SOCIALES  ', 'ENFERMERÍA ', 'INGENIERÍA ', 'MEDICINA', 'MEDICINA VETERINARIA Y DE ZOOTECNIA ', 'ODONTOLOGÍA']],
+        args: [['AGRONOMÍA', 'ARTES', 'CIENCIAS', 'CIENCIAS AGRARIAS', 'CIENCIAS ECONÓMICAS', 'CIENCIAS HUMANAS', 'DERECHO, CIENCIAS POLÍTICAS Y SOCIALES', 'ENFERMERÍA', 'INGENIERÍA', 'MEDICINA', 'MEDICINA VETERINARIA Y DE ZOOTECNIA', 'ODONTOLOGÍA']],
         msg: 'El campo Faculty no admite ese valor' // Mensaje de error personalizado si la validación falla
       }
     }
