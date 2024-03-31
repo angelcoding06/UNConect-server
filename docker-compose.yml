@@ -57,19 +57,20 @@ services:
   #   ports:
   #     - 27018:27017
 
-  # unconnect_ag:
-  #   container_name: unconnect_ag
-  #   build:
-  #     context: ./api_gateway/
-  #   ports:
-  #     - 8000:8000
-  #   environment:
-  #     PORT: 8000
-  #   command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-  #   links:
-  #     - unconnect_posts_ms
-  #     - unconnect_media_ms
-  #     - unconnect_auth_ms
+  unconnect_ag:
+    container_name: unconnect_ag
+    build:
+      context: ./api_gateway/
+    ports:
+      - 8000:8000
+    environment:
+      PORT: 8000
+    command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+    links:
+      - unconnect_group_ms
+      # - unconnect_posts_ms
+      # - unconnect_media_ms
+      # - unconnect_auth_ms
 
   # unconnect_auth_ms:
   #   container_name: unconnect_auth_ms
@@ -112,6 +113,6 @@ services:
       - PYTHONUNBUFFERED=1
     command: python manage.py runserver 0.0.0.0:8001
 # volumes:
-  # mongodb_data_container:
-  # mongodb_data_container_media:
-  # mysql_data_container_auth:
+# mongodb_data_container:
+# mongodb_data_container_media:
+# mysql_data_container_auth:

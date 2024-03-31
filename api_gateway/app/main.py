@@ -15,6 +15,8 @@ from app.post_ms.likes.likes_schema import Mutation as LikeMutation
 from app.post_ms.comments.comments_schema import Query as CommentQuery
 from app.post_ms.comments.comments_schema import Mutation as CommentMutation
 from app.auth_ms.auth.auth_schema import Mutation as AuthMutation
+from app.group_ms.persons.persons_schema import Query as PersonQuery
+from app.group_ms.persons.persons_schema import Mutation as PersonMutation
 from app.const import MEDIA_MS_URL
 # TODO fix the urls
 
@@ -27,12 +29,12 @@ class HelloQuery:
 
 
 @strawberry.type
-class Query(HelloQuery, PostQuery, LikeQuery, CommentQuery, AuthQuery):
+class Query(HelloQuery, PostQuery, LikeQuery, CommentQuery, AuthQuery,PersonQuery):
     pass
 
 
 @strawberry.type
-class Mutation(PostMutation, LikeMutation, CommentMutation, AuthMutation):
+class Mutation(PostMutation, LikeMutation, CommentMutation, AuthMutation,PersonMutation):
     pass
 
 
