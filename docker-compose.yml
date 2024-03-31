@@ -83,20 +83,20 @@ services:
   #     - MYSQL_DATABASE=${MYSQL_DATABASE}
   #   volumes:
   #     - mysql_data_container_auth:/var/lib/mysq
-  unconnect_group_ms:
-    container_name: 'unconnect_group_ms'
-    build:
-      context: ./group_ms/
-    ports:
-      - 8001:8001
-    volumes:
-      - ./group_ms/db.sqlite3:/app/db.sqlite3
-    environment:
-      - DJANGO_SETTINGS_MODULE=group_ms.settings
-      - PYTHONUNBUFFERED=1
-    command: python manage.py runserver 0.0.0.0:8001
-    depends_on:
-      - unconnect_ag
+  # unconnect_group_ms:
+  #   container_name: 'unconnect_group_ms'
+  #   build:
+  #     context: ./group_ms/
+  #   ports:
+  #     - 8001:8001
+  #   volumes:
+  #     - ./group_ms/db.sqlite3:/app/db.sqlite3
+  #   environment:
+  #     - DJANGO_SETTINGS_MODULE=group_ms.settings
+  #     - PYTHONUNBUFFERED=1
+  #   command: python manage.py runserver 0.0.0.0:8001
+  #   depends_on:
+  #     - unconnect_ag
 
   
   unconnect_ag:
@@ -109,7 +109,7 @@ services:
       PORT: 8000
     command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
     # links:
-      # - unconnect_users_ms
+    #   - unconnect_users_ms
       # - unconnect_group_ms
       # - unconnect_posts_ms
       # - unconnect_media_ms
@@ -140,7 +140,7 @@ services:
   #     - "5432:5432"
 
 # volumes:
-# mongodb_data_container:
-# mongodb_data_container_media:
-# mysql_data_container_auth:
-  # postgres_data:
+# # mongodb_data_container:
+# # mongodb_data_container_media:
+# # mysql_data_container_auth:
+#   postgres_data:
