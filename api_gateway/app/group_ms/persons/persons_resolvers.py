@@ -8,7 +8,7 @@ import json
 def get_person_group()-> PersonGroupResponse:
 		try:
 				response = requests.get(f"{GROUP_MS_URL}/groups/getPerson/")
-				print(response.content)
+				print("RESPONSE :", response.status_code)
 				if response.status_code != 200:
 						raise GraphQLError(str(response.text))
 				json_response = response.text
@@ -27,13 +27,16 @@ def get_person_group()-> PersonGroupResponse:
 
 def create_person_group(user_id:str) -> PersonGroupClass:
 		try:
-				response = requests.post(f"GROUP_MS_URL/groups/postPerson/", json = {"user_id":user_id})
-				text=response.text
-				text=json.loads(text)
+				response = requests.post(f"{GROUP_MS_URL}/groups/postPerson/", json = {"user_id":user_id})
+				print(response)
+				print(response.text)
+				print(response.status_code)
+
 				if response.status_code == 404:
 						raise GraphQLError(str(response.text))
+				text=response.text
+				text=json.loads(text)
 				return PersonGroupClass(**text)
-
 		except ValueError as error: # Bad format
 				raise GraphQLError(str(error))
 		except requests.RequestException as error:  # net errors
