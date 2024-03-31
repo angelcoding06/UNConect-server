@@ -2,6 +2,7 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = require('../database').sequelize; // Importa la instancia de Sequelize configurada
 const { v4: uuidv4 } = require('uuid');
+const parsePhoneNumber = require('libphonenumber-js').parsePhoneNumberFromString;
 
 // Define el modelo User utilizando Sequelize
 const User = sequelize.define('User', {
@@ -59,8 +60,16 @@ const User = sequelize.define('User', {
     }
   },
   Phone_Number: {
-    type: DataTypes.INTEGER, // Tipo de datos INTEGER para el número de teléfono
-    allowNull: false // No permite valores nulos
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      isValidPhoneNumber(value) {
+        const phoneNumber = parsePhoneNumber(value, 'CO'); // Cambia 'US' al código de país correspondiente
+        if (!phoneNumber || !phoneNumber.isValid()) {
+          throw new Error('Número de teléfono no válido');
+        }
+      }
+    },
   },
   Gender: {
     type: DataTypes.STRING, // Tipo de datos STRING para el género
