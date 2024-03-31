@@ -37,7 +37,7 @@ exports.createUser = async (req, res, next) => {
   try {
     // Extrae los campos del cuerpo de la solicitud
     const { ID_Auth, Name, Last_Name, Birthday, Campus, Faculty, Career, MemberUN_Since, Phone_Number, Gender, Profile_Photo, myGroups } = req.body;
-    console.log(req.body)
+    // console.log(req.body)
     console.log("ID_Auth: ", ID_Auth)
     console.log("Name: ", Name)
     console.log("Last_Name: ", Last_Name)
