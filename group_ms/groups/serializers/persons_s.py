@@ -4,5 +4,5 @@ from groups.models import Persons
 class PersonsSerielizer(ModelSerializer):
     class Meta:
         model = Persons
-        fields = '__all__'
+        fields = '__all__' 
 

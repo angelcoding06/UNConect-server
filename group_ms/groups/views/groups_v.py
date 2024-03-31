@@ -72,22 +72,22 @@ def postGroup(request):
 
 
 @api_view(['DELETE'])
-def deleteGroup(request, pk):
+def deleteGroup(request, group_id):
     try:
-        group = Groups.objects.get(id=pk)
+        group = Groups.objects.get(id=group_id)
     except Groups.DoesNotExist:
-        return Response({'error': f'Group with ID {pk} does not exist'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': f'Group with ID {group_id} does not exist'}, status=status.HTTP_404_NOT_FOUND)
     group.delete()
-    return Response({'message': f'Group with ID {pk} has been deleted'}, status=status.HTTP_204_NO_CONTENT)
+    return Response({'message': f'Group with ID {group_id} has been deleted'}, status=status.HTTP_204_NO_CONTENT)
 
 
 
 @api_view(['PUT'])
-def putGroup(request, pk):
+def putGroup(request, group_id):
     try:
-        group = Groups.objects.get(id=pk)
+        group = Groups.objects.get(id=group_id)
     except Groups.DoesNotExist:
-        return Response({'error': f'Group with ID {pk} does not exist'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': f'Group with ID {group_id} does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
     data = request.data
 
@@ -114,11 +114,11 @@ def putGroup(request, pk):
 # Metodos en constante uso
 #Agregar Solicitudes
 @api_view(['POST'])
-def add_in_request(request, pk):
+def add_in_request(request, group_id):
     try:
-        group = Groups.objects.get(id=pk)
+        group = Groups.objects.get(id=group_id)
     except Groups.DoesNotExist:
-        return Response({'error': f'Group with ID {pk} does not exist'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': f'Group with ID {group_id} does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
     data = request.data
 
@@ -183,11 +183,11 @@ def get_in_request(request, group_id):
 
 #Agregar/eliminar Miembro
 @api_view(['POST'])
-def add_member(request, pk):
+def add_member(request, group_id):
     try:
-        group = Groups.objects.get(id=pk)
+        group = Groups.objects.get(id=group_id)
     except Groups.DoesNotExist:
-        return Response({'error': f'Group with ID {pk} does not exist'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': f'Group with ID {group_id} does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
     data = request.data
 
@@ -257,11 +257,11 @@ def get_members(request, group_id):
 
 #Agregar/eliminar Admin
 @api_view(['POST'])
-def add_admin(request, pk):
+def add_admin(request, group_id):
     try:
-        group = Groups.objects.get(id=pk)
+        group = Groups.objects.get(id=group_id)
     except Groups.DoesNotExist:
-        return Response({'error': f'Group with ID {pk} does not exist'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': f'Group with ID {group_id} does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
     data = request.data
 
