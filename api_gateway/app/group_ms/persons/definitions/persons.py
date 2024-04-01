@@ -12,3 +12,15 @@ class Person:
 @strawberry.type
 class PersonGroupResponse:
 	persons: typing.List[PersonGroupClass]
+
+@strawberry.type
+class groupclass:
+	id:str
+	name:str
+	photo:str
+	description:str
+	is_private:bool
+	owner_id:int
+	in_requests: typing.List[int]
+	members: typing.List[int]
+	admins: typing.List[int]

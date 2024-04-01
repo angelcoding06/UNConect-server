@@ -10,7 +10,7 @@ def get_person_group()-> PersonGroupResponse:
 				response = requests.get(f"{GROUP_MS_URL}/groups/getPerson/")
 				print("RESPONSE :", response.status_code)
 				if response.status_code != 200:
-						raise GraphQLError(str(response.text))
+						raise GraphQLError(str(response.json()["error"]))
 				json_response = response.text
 				json_response=json.loads(json_response)
 				users = []
@@ -33,7 +33,7 @@ def create_person_group(user_id:str) -> PersonGroupClass:
 				print(response.status_code)
 
 				if response.status_code == 404:
-						raise GraphQLError(str(response.text))
+						raise GraphQLError(str(response.json()["error"]))
 				text=response.text
 				text=json.loads(text)
 				return PersonGroupClass(**text)
@@ -44,11 +44,11 @@ def create_person_group(user_id:str) -> PersonGroupClass:
 		except KeyError as error:  # Keys error
 				raise GraphQLError(f"Error al procesar la respuesta: {error}")
 
-def edit_person_group(user_id:str,id:int):
+def edit_person_group(user_id:str,id:int)-> PersonGroupClass:
 		try:
-				response = requests.put(f"GROUP_MS_URL/groups/putPerson/{id}/", json = {"user_id":user_id})
+				response = requests.put(f"{GROUP_MS_URL}/groups/putPerson/{id}/", json = {"user_id":user_id})
 				if response.status_code != 200:
-						raise GraphQLError((response.text))
+						raise GraphQLError((response.json()["error"]))
 				text=response.text
 				text=json.loads(text)
 				return PersonGroupClass(**text)
@@ -60,13 +60,13 @@ def edit_person_group(user_id:str,id:int):
 		except KeyError as error:  # Keys error
 				raise GraphQLError(f"Error al procesar la respuesta: {error}")
 
-def delete_person_group(id:int):
+def delete_person_group(id:int) -> str:
 		try:
-				response = requests.delete(f"GROUP_MS_URL/groups/deletePerson/{id}")
+				response = requests.delete(f"{GROUP_MS_URL}/groups/deletePerson/{id}")
 				if response.status_code != 200:
-					raise GraphQLError(str(response.text))
-				text=response.text
-				return text
+					raise GraphQLError(str(response.json()["error"]))
+				text=response.json()
+				return text["message"]
 
 		except ValueError as error: # Bad format
 				raise GraphQLError(str(error))

@@ -1,26 +1,24 @@
 version: '3.9'
-
 services:
-  rabbitmq:
-    image: 'rabbitmq:3-management'
-    container_name: 'rabbitmq'
-    ports:
-      - '5672:5672'
-      - '15672:15672'
-
-  # unconnect_posts_ms:
-  #   container_name: 'unconnect_posts_ms'
-  #   build:
-  #     context: ./post_ms/
+  # unconnect_mq:
+  #   image: 'rabbitmq:3-management'
+  #   container_name: 'unconnect_mq'
   #   ports:
-  #     - ${SERVER_PORT}:${SERVER_PORT}
-  #     - 3021:3021
-  #   command: npm run start:debug
-  #   env_file: ./post_ms/.env
-  #   depends_on:
-  #     - unconnect_posts_db
-  #   links:
-  #     - unconnect_posts_db
+  #     - '5672:5672'
+  #     - '15672:15672'
+  # unconnect_posts_ms:
+  # container_name: 'unconnect_posts_ms'
+  # build:
+  #   context: ./post_ms/
+  # ports:
+  #   - ${SERVER_PORT}:${SERVER_PORT}
+  #   - 3021:3021
+  # command: npm run start:debug
+  # env_file: ./post_ms/.env
+  # depends_on:
+  #   - unconnect_posts_db
+  # links:
+  #   - unconnect_posts_db
   # unconnect_posts_db:
   #   image: mongo:latest
   #   container_name: 'unconnect_posts_db'
@@ -63,94 +61,90 @@ services:
   #     - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD_MEDIA}
   #   ports:
   #     - 27018:27017
-  unconnect_auth_ms:
-    container_name: unconnect_auth_ms
-    image: unconnect_auth_ms_image
-    build:
-      context: ./auth_ms/auth-service/
-    ports:
-      - 8081:8081
-    environment:
-      - SPRING_PROFILE = ${SPRING_PROFILE}
-      - DATABASE_URL=${DATABASE_URL}
-      - DATABASE_USERNAME=${DATABASE_USERNAME}
-      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
-      - SPRING_RABBITMQ_HOST=rabbitmq
-    depends_on:
-      - mysqldb
-      - rabbitmq
-    links:
-      - mysqldb
-    restart: on-failure
-
-  mysqldb:
-    container_name: mysqldb
-    image: mysql
-    environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-    volumes:
-      - mysql_data_container_auth:/var/lib/mysq
-  # unconnect_group_ms:
-  #   container_name: 'unconnect_group_ms'
+  # unconnect_auth_ms:
+  #   container_name: unconnect_auth_ms
+  #   image: unconnect_auth_ms_image
   #   build:
-  #     context: ./group_ms/
+  #     context: ./auth_ms/auth-service/
   #   ports:
-  #     - 8001:8001
-  #   volumes:
-  #     - ./group_ms/db.sqlite3:/app/db.sqlite3
+  #     - 8081:8081
   #   environment:
-  #     - DJANGO_SETTINGS_MODULE=group_ms.settings
-  #     - PYTHONUNBUFFERED=1
-  #   command: python manage.py runserver 0.0.0.0:8001
+  #     - SPRING_PROFILE = ${SPRING_PROFILE}
+  #     - DATABASE_URL=${DATABASE_URL}
+  #     - DATABASE_USERNAME=${DATABASE_USERNAME}
+  #     - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+  #     - SPRING_RABBITMQ_HOST=unconnect_mq
   #   depends_on:
-  #     - unconnect_ag
-
-  # unconnect_ag:
-  #   container_name: unconnect_ag
-  #   build:
-  #     context: ./api_gateway/
-  #   ports:
-  #     - 8000:8000
-  #   environment:
-  #     PORT: 8000
-  #   command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-  # links:
-  #   - unconnect_users_ms
-  # - unconnect_group_ms
-  # - unconnect_posts_ms
-  # - unconnect_media_ms
-  # - unconnect_auth_ms
-
-  unconnect_users_ms:
-    container_name: 'unconnect_users_ms'
+  #     - mysqldb
+  #     - unconnect_mq
+  #   links:
+  #     - mysqldb
+  #   restart: on-failure
+  # mysqldb:
+  # container_name: mysqldb
+  # image: mysql
+  # environment:
+  #   - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+  #   - MYSQL_DATABASE=${MYSQL_DATABASE}
+  # volumes:
+  #   - mysql_data_container_auth:/var/lib/mysq
+  unconnect_group_ms:
+    container_name: 'unconnect_group_ms'
     build:
-      context: ./user_ms/
+      context: ./group_ms/
     ports:
-      - 3003:3003
-    command: ["/bin/bash", "-c", "sleep 60 && npm start"] ## para que cargue la cola de mensajes.
-    environment:
-      - RABBITMQ_HOST=rabbitmq
-      - RABBITMQ_PORT=5672
-    depends_on:
-      - unconnect_auth_ms
-      - unconnect_users_db
-      - rabbitmq
-
-  unconnect_users_db:
-    image: postgres:latest
-    container_name: 'unconnect_users_db'
+      - 8001:8001
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - ./group_ms/db.sqlite3:/app/db.sqlite3
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: usersdb
-    ports:
-      - '5432:5432'
+      - DJANGO_SETTINGS_MODULE=group_ms.settings
+      - PYTHONUNBUFFERED=1
+    command: python manage.py runserver 0.0.0.0:8001
 
-volumes:
-  # mongodb_data_container:
-  # mongodb_data_container_media:
-  mysql_data_container_auth:
-  postgres_data:
+  unconnect_ag:
+    container_name: unconnect_ag
+    build:
+      context: ./api_gateway/
+    ports:
+      - 8000:8000
+    environment:
+      PORT: 8000
+    command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+    links:
+      # - unconnect_users_ms
+      - unconnect_group_ms
+      # - unconnect_posts_ms
+      # - unconnect_media_ms
+      # - unconnect_auth_ms
+#   unconnect_users_ms:
+#     container_name: 'unconnect_users_ms'
+#     build:
+#       context: ./user_ms/
+#     ports:
+#       - 3003:3003
+#     command: ['/bin/bash', '-c', 'sleep 60 && npm start'] ## para que cargue la cola de mensajes.
+#     environment:
+#       - RABBITMQ_HOST=unconnect_mq
+#       - RABBITMQ_PORT=5672
+#     depends_on:
+#       - unconnect_auth_ms
+#       - unconnect_users_db
+#       - unconnect_mq
+
+#   unconnect_users_db:
+#     image: postgres:latest
+#     container_name: 'unconnect_users_db'
+#     volumes:
+#       - postgres_data:/var/lib/postgresql/data
+#     environment:
+#       POSTGRES_USER: user
+#       POSTGRES_PASSWORD: password
+#       POSTGRES_DB: usersdb
+#     ports:
+#       - '5432:5432'
+
+# volumes:
+#   # mongodb_data_container:
+#   # mongodb_data_container_media:
+#   mysql_data_container_auth:
+#   postgres_data:
