@@ -35,9 +35,11 @@ exports.getUserById = async (req, res, next) => {
 // Controlador para crear un nuevo usuario
 exports.createUser = async (req, res, next) => {
   try {
+    console.log(req)
+    console.log(req.body)
+
     // Extrae los campos del cuerpo de la solicitud
-    const { ID_Auth, Name, Last_Name, Birthday, Campus, Faculty, Career, MemberUN_Since, Phone_Number, Gender, Profile_Photo, myGroups } = req.body;
-    // console.log(req.body)
+    const { ID_Auth, Name, Last_Name, Birthday, Campus, Faculty, Career, MemberUN_Since, Phone_Number, Gender, Profile_Photo, myGroups } = req;
     console.log("ID_Auth: ", ID_Auth)
     console.log("Name: ", Name)
     console.log("Last_Name: ", Last_Name)
@@ -47,28 +49,28 @@ exports.createUser = async (req, res, next) => {
     console.log("Career: ", Career)
     console.log("MemberUN_Since: ", MemberUN_Since)
     console.log("Phone_Number: ", Phone_Number)
-    console.log("GENDER: ", Gender )
+    console.log("GENDER: ", Gender)
     console.log("Profile_Photo: ", Profile_Photo)
     console.log("myGroups: ", myGroups)
 
     // Crea un nuevo usuario con los campos proporcionados
-    const newUser = await User.create({ 
-      ID_Auth, 
-      Name, 
-      Last_Name, 
-      Birthday, 
-      Campus, 
-      Faculty, 
-      Career, 
-      MemberUN_Since, 
-      Phone_Number, 
-      Gender, 
-      Profile_Photo, 
-      myGroups 
+    const newUser = await User.create({
+      ID_Auth,
+      Name,
+      Last_Name,
+      Birthday,
+      Campus,
+      Faculty,
+      Career,
+      MemberUN_Since,
+      Phone_Number,
+      Gender,
+      Profile_Photo,
+      myGroups
     });
 
     // Envia la respuesta con el nuevo usuario creado
-    res.status(201).json(newUser);
+    // res.status(201).json(newUser);
   } catch (error) {
     console.error("Error en createUser:", error);
     next(error); // Pasa cualquier error al siguiente middleware
@@ -81,7 +83,7 @@ exports.updateUser = async (req, res, next) => {
   try {
     // Busca el usuario por su ID
     const user = await User.findByPk(id);
-    
+
     // Si no se encuentra el usuario, devuelve un error
     if (!user) {
       return res.status(404).json({ error: 'User not found' });

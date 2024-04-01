@@ -1,6 +1,12 @@
 version: '3.9'
 
 services:
+  rabbitmq:
+    image: 'rabbitmq:3-management'
+    container_name: 'rabbitmq'
+    ports:
+      - '5672:5672'
+      - '15672:15672'
 
   # unconnect_posts_ms:
   #   container_name: 'unconnect_posts_ms'
@@ -100,7 +106,6 @@ services:
   #   depends_on:
   #     - unconnect_ag
 
-  
   # unconnect_ag:
   #   container_name: unconnect_ag
   #   build:
@@ -110,33 +115,31 @@ services:
   #   environment:
   #     PORT: 8000
   #   command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-    # links:
-    #   - unconnect_users_ms
-      # - unconnect_group_ms
-      # - unconnect_posts_ms
-      # - unconnect_media_ms
-      # - unconnect_auth_ms
+  # links:
+  #   - unconnect_users_ms
+  # - unconnect_group_ms
+  # - unconnect_posts_ms
+  # - unconnect_media_ms
+  # - unconnect_auth_ms
 
   unconnect_users_ms:
-    container_name: "unconnect_users_ms"
+    container_name: 'unconnect_users_ms'
     build:
       context: ./user_ms/
     ports:
       - 3003:3003
-    command: npm start
+    command: ["/bin/bash", "-c", "sleep 60 && npm start"] ## para que cargue la cola de mensajes.
     environment:
       - RABBITMQ_HOST=rabbitmq
       - RABBITMQ_PORT=5672
     depends_on:
-      - unconnect_users_db
-      - rabbitmq
-    links:
+      - unconnect_auth_ms
       - unconnect_users_db
       - rabbitmq
 
   unconnect_users_db:
     image: postgres:latest
-    container_name: "unconnect_users_db"
+    container_name: 'unconnect_users_db'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
@@ -144,14 +147,10 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: usersdb
     ports:
-      - "5432:5432"
-  rabbitmq:
-    image: "rabbitmq:3-management"
-    ports:
-      - "5672:5672"
-      - "15672:15672"
+      - '5432:5432'
+
 volumes:
-# mongodb_data_container:
-# mongodb_data_container_media:
+  # mongodb_data_container:
+  # mongodb_data_container_media:
   mysql_data_container_auth:
   postgres_data:

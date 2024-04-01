@@ -6,6 +6,7 @@ const userRoutes = require('./routes/user.js'); // Importa las rutas relacionada
 const friendsRoutes = require('./routes/friends.js'); // Importa las rutas relacionadas con los amigos
 const User = require('./models/usermodel'); // Importa el modelo de usuario
 const Friends = require('./models/friendsmodel'); // Importa el modelo de amigos
+const { consumeQueue } = require('./messageQueue');
 
 // Función asincrónica para autenticar la conexión a la base de datos y sincronizar los modelos
 async function authenticateDatabase() {
@@ -20,6 +21,7 @@ async function authenticateDatabase() {
 }
 
 authenticateDatabase(); // Llama a la función para autenticar la conexión a la base de datos y sincronizar los modelos
+consumeQueue().catch(console.error);
 
 app.get('/', (req, res) => {
   res.send('UNConnect users'); // Ruta de inicio que muestra un mensaje simple
