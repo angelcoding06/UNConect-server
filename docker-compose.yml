@@ -80,14 +80,14 @@ services:
       - DATABASE_PASSWORD=${DATABASE_PASSWORD}
       - SPRING_RABBITMQ_HOST=unconnect_mq
     depends_on:
-      - mysqldb
+      - unconnect_auth_db
       - unconnect_mq
     links:
-      - mysqldb
+      - unconnect_auth_db
     restart: on-failure
 
-  mysqldb:
-    container_name: mysqldb
+  unconnect_auth_db:
+    container_name: unconnect_auth_db
     image: mysql
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
