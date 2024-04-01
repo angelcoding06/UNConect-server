@@ -19,7 +19,7 @@ let user_const = {
 async function consumeQueue() {
 	
 	console.log("antes de la conexion");
-	const connection = await amqp.connect('amqp://rabbitmq:5672');
+	const connection = await amqp.connect('amqp://unconnect_mq:5672');
 	console.log('Connected to RabbitMQ', connection);
 	const channel = await connection.createChannel();
 	const queue = 'user-queue';
