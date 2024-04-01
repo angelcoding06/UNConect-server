@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 @RestController
 @PreAuthorize("permitAll()")
@@ -33,6 +34,9 @@ public class AuthUserController {
 
 	@Autowired
 	AuthUserService authUserService;
+
+	@Autowired
+	RabbitTemplate rabbitTemplate;
 
 	@GetMapping("/hi")
 	public ResponseEntity<String> get() {
@@ -60,6 +64,8 @@ public class AuthUserController {
 		AuthUser authUser = authUserService.save(dto);
 		if (authUser == null)
 			return ResponseEntity.badRequest().build();
+		rabbitTemplate.convertAndSend("user-queue", "New user created with ID: " + authUser.getId() + " and email " + authUser.getEmail());
+
 		return ResponseEntity.ok(authUser.toAuthUserResponseDto());
 	}
 
