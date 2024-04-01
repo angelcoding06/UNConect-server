@@ -64,7 +64,8 @@ public class AuthUserController {
 		AuthUser authUser = authUserService.save(dto);
 		if (authUser == null)
 			return ResponseEntity.badRequest().build();
-		rabbitTemplate.convertAndSend("user-queue", "New user created with ID: " + authUser.getId() + " and email " + authUser.getEmail());
+		String json = String.format("{\"ID_Auth\":\"%s\"}", authUser.getId());
+    rabbitTemplate.convertAndSend("user-queue", json);
 
 		return ResponseEntity.ok(authUser.toAuthUserResponseDto());
 	}
