@@ -10,7 +10,7 @@ def get_person_group()-> PersonGroupResponse:
 				response = requests.get(f"{GROUP_MS_URL}/groups/getPerson/")
 				print("RESPONSE :", response.status_code)
 				if response.status_code != 200:
-						raise GraphQLError(str(response.json()["error"]))
+						raise GraphQLError(str(response.text))
 				json_response = response.text
 				json_response=json.loads(json_response)
 				users = []
@@ -33,7 +33,7 @@ def create_person_group(user_id:str) -> PersonGroupClass:
 				print(response.status_code)
 
 				if response.status_code == 404:
-						raise GraphQLError(str(response.json()["error"]))
+						raise GraphQLError(str(response.text))
 				text=response.text
 				text=json.loads(text)
 				return PersonGroupClass(**text)
@@ -48,7 +48,7 @@ def edit_person_group(user_id:str,id:int)-> PersonGroupClass:
 		try:
 				response = requests.put(f"{GROUP_MS_URL}/groups/putPerson/{id}/", json = {"user_id":user_id})
 				if response.status_code != 200:
-						raise GraphQLError((response.json()["error"]))
+						raise GraphQLError((response.text))
 				text=response.text
 				text=json.loads(text)
 				return PersonGroupClass(**text)
@@ -64,7 +64,7 @@ def delete_person_group(id:int) -> str:
 		try:
 				response = requests.delete(f"{GROUP_MS_URL}/groups/deletePerson/{id}")
 				if response.status_code != 200:
-					raise GraphQLError(str(response.json()["error"]))
+					raise GraphQLError(str(response.text))
 				text=response.json()
 				return text["message"]
 
