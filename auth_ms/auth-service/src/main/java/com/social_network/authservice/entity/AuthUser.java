@@ -27,6 +27,6 @@ public class AuthUser {
 	private Role role;
 
 	public AuthUserResponseDto toAuthUserResponseDto() {
-		return new AuthUserResponseDto(this.email, this.isVerified, this.role);
+		return new AuthUserResponseDto(this.id, this.email, this.isVerified, this.role);
 	}
 }

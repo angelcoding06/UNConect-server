@@ -6,6 +6,7 @@ const userRoutes = require('./routes/user.js'); // Importa las rutas relacionada
 const friendsRoutes = require('./routes/friends.js'); // Importa las rutas relacionadas con los amigos
 const User = require('./models/usermodel'); // Importa el modelo de usuario
 const Friends = require('./models/friendsmodel'); // Importa el modelo de amigos
+const { consumeQueue } = require('./messageQueue');
 const neo4j = require('neo4j-driver');
 require('dotenv').config();
 
@@ -40,6 +41,7 @@ async function authenticateDatabase() {
 }
 
 authenticateDatabase(); // Llama a la función para autenticar la conexión a la base de datos y sincronizar los modelos
+consumeQueue().catch(console.error);
 
 connectAndQueryNeo4j(); // Iniciar la conexión y consulta a Neo4j al iniciar la aplicación
 

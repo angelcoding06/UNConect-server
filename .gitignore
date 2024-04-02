@@ -1,7 +1,4 @@
 .env
 .vscode/
 x.html
-api_venv/
-__pycache__/
-.vscode/
-group_ms/group_venv/
+environment.env

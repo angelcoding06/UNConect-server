@@ -51,6 +51,12 @@ export class PostsService {
     const filters = { UserId: UserId, GroupId: GroupId || null };
     try {
       const userPosts = await paginate(this.postModel, page, filters);
+      if (page > userPosts.totalPages) {
+        throw new HttpException(
+          'The page number requested is greater than the total number of pages',
+          HttpStatus.NOT_FOUND,
+        );
+      }
       if (userPosts.items.length === 0) {
         throw new HttpException(
           'No posts were found for this user',
@@ -84,10 +90,7 @@ export class PostsService {
       if (error instanceof HttpException) {
         throw error;
       } else if (error.name == 'CastError') {
-        throw new HttpException(
-          'The post id is not valid',
-          HttpStatus.NOT_FOUND,
-        );
+        throw new HttpException('the id is not valid', HttpStatus.NOT_FOUND);
       } else {
         throw new HttpException(
           'There was an error searching for the post',
@@ -99,6 +102,7 @@ export class PostsService {
 
   async updatePost(PostId: string, updatePostDto: UpdatePostDto) {
     const postFound = await this.postModel.findById(PostId);
+    console.log(postFound);
     if (!postFound) {
       throw new HttpException(
         'The post to modify was not found',
@@ -110,10 +114,16 @@ export class PostsService {
       await this.postModel.updateOne({ _id: PostId }, updatedPost);
       return updatedPost;
     } catch (error) {
-      throw new HttpException(
-        'There was an error modifying the post',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      if (error instanceof HttpException) {
+        throw error;
+      } else if (error.name == 'CastError') {
+        throw new HttpException('the id is not valid', HttpStatus.NOT_FOUND);
+      } else {
+        throw new HttpException(
+          'There was an error searching for the post',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
     }
   }
 
@@ -121,6 +131,12 @@ export class PostsService {
     const filter = { GroupId: GroupId };
     try {
       const groupPosts = await paginate(this.postModel, page, filter);
+      if (page > groupPosts.totalPages && groupPosts.totalPages !== 0) {
+        throw new HttpException(
+          'The page number requested is greater than the total number of pages',
+          HttpStatus.NOT_FOUND,
+        );
+      }
       if (groupPosts.items.length === 0) {
         throw new HttpException(
           'No posts found for this group',
@@ -131,6 +147,8 @@ export class PostsService {
     } catch (error) {
       if (error instanceof HttpException) {
         throw error;
+      } else if (error.name == 'CastError') {
+        throw new HttpException('the id is not valid', HttpStatus.NOT_FOUND);
       } else {
         throw new HttpException(
           'An error occurred while searching for the group posts',
@@ -155,10 +173,16 @@ export class PostsService {
       await this.postModel.deleteOne({ _id: PostId });
       return `The post with id ${PostId} has been deleted successfully`;
     } catch (error) {
-      throw new HttpException(
-        'The post could not be deleted, an unknown error occurred',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      if (error instanceof HttpException) {
+        throw error;
+      } else if (error.name == 'CastError') {
+        throw new HttpException('the id is not valid', HttpStatus.NOT_FOUND);
+      } else {
+        throw new HttpException(
+          'The post could not be deleted, an unknown error occurred',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
     }
   }
 }

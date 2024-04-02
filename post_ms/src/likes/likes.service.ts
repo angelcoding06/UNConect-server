@@ -62,6 +62,12 @@ export class LikesService {
     }
     try {
       const likes = await paginate(this.likeModel, page, filter);
+      if (page > likes.totalPages) {
+        throw new HttpException(
+          'The page number requested is greater than the total number of pages',
+          HttpStatus.NOT_FOUND,
+        );
+      }
       if (likes.items.length === 0) {
         throw new HttpException(
           'There were no likes found for this post',
