@@ -6,8 +6,8 @@ from enum import Enum
 @strawberry.enum
 class Role(Enum):
     ADMIN = "ADMIN"
-    USUARIO_REGULAR = "usuario_regular"
-    MODERADOR = "moderador"
+    USUARIO_REGULAR = "USUARIO_REGULAR"
+    MODERADOR = "MODERADOR"
     SUPERUSUARIO = "SUPERUSUARIO"
 
 
