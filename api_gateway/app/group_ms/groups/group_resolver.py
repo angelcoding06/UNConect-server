@@ -12,7 +12,7 @@ def get_groups() -> GrouppClassResponse:
 				response = requests.get(f"{GROUP_MS_URL}/groups/getGroup/")
 				print("RESPONSE :", response.status_code)
 				if response.status_code != 200:
-						raise GraphQLError(str(response.json()["error"]))
+						raise GraphQLError(str(response.text))
 				json_response = response.text
 				json_response=json.loads(json_response)
 				groups_response = []
@@ -32,7 +32,7 @@ def get_in_requests(groupId:int)-> UserResponse:
 				response = requests.get(f"{GROUP_MS_URL}/groups/get_in_request/{groupId}/")
 				print("RESPONSE :", response.status_code)
 				if response.status_code != 200:
-						raise GraphQLError(str(response.json()["error"]))
+						raise GraphQLError(str(response.text))
 				json_response = response.text
 				json_response=json.loads(json_response)
 				users = []
@@ -52,7 +52,7 @@ def get_members_by_group(groupId:int)-> UserResponse:
 				response = requests.get(f"{GROUP_MS_URL}/groups/get_members/{groupId}/")
 				print("RESPONSE :", response.status_code)
 				if response.status_code != 200:
-						raise GraphQLError(str(response.json()["error"]))
+						raise GraphQLError(str(response.text))
 				json_response = response.text
 				json_response=json.loads(json_response)
 				users = []
@@ -72,7 +72,7 @@ def	get_admins_by_group(groupId:int)-> UserResponse:
 				response = requests.get(f"{GROUP_MS_URL}/groups/get_admins/{groupId}/")
 				print("RESPONSE :", response.status_code)
 				if response.status_code != 200:
-						raise GraphQLError(str(response.json()["error"]))
+						raise GraphQLError(str(response.text))
 				json_response = response.text
 				json_response=json.loads(json_response)
 				users = []
@@ -92,7 +92,7 @@ def get_group(groupId:int) -> GrouppClass:
 				response = requests.get(f"{GROUP_MS_URL}/groups/get_group_by_id/{groupId}/")
 				print("RESPONSE :", response.status_code)
 				if response.status_code != 200:
-						raise GraphQLError(str(response.json()["error"]))
+						raise GraphQLError(str(response.text))
 				json_response = response.text
 				json_response = json.loads(json_response)
 				json_response = GrouppClass(**json_response)
@@ -109,7 +109,7 @@ def create_group(name: str,photo: str,description: str,is_private: bool,owner_id
 				response = requests.post(f"{GROUP_MS_URL}/groups/postGroup/",json={"name":name,"photo":photo,"description":description,"is_private":is_private,"owner_id":owner_id,"in_requests":in_requests,"members":members,"admins":admins})
 				print("RESPONSE :", response.status_code)
 				if response.status_code != 201:
-						raise GraphQLError(str(response.json()["error"]))
+						raise GraphQLError(str(response.text))
 				json_response = response.text
 				json_response = json.loads(json_response)
 				json_response = GrouppClass(**json_response)
@@ -126,7 +126,7 @@ def edit_group(groupId:int,name: str,photo: str,description: str,is_private: boo
 				response = requests.put(f"{GROUP_MS_URL}/groups/putGroup/{groupId}/",json={"name":name,"photo":photo,"description":description,"is_private":is_private,"owner_id":owner_id})
 				print("RESPONSE :", response.status_code)
 				if response.status_code != 200:
-						raise GraphQLError(str(response.json()["error"]))
+						raise GraphQLError(str(response.text))
 				json_response = response.text
 				json_response = json.loads(json_response)
 				json_response = GrouppClass(**json_response)
@@ -142,7 +142,7 @@ def delete_group(groupId:int) -> str:
 		try:
 				response = requests.delete(f"{GROUP_MS_URL}/groups/deleteGroup/{groupId}/")
 				if response.status_code != 204:
-					raise GraphQLError(str(response.json()["error"]))
+					raise GraphQLError(str(response.text))
 				text=response.json()
 				return text["message"]
 
