@@ -74,3 +74,4 @@ def delete_person_group(id:int) -> str:
 				raise GraphQLError(f"Error al contactar la API REST: {error}")
 		except KeyError as error:  # Keys error
 				raise GraphQLError(f"Error al procesar la respuesta: {error}")
+

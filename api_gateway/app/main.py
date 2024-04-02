@@ -17,6 +17,8 @@ from app.post_ms.comments.comments_schema import Mutation as CommentMutation
 from app.auth_ms.auth.auth_schema import Mutation as AuthMutation
 from app.group_ms.persons.persons_schema import Query as PersonQuery
 from app.group_ms.persons.persons_schema import Mutation as PersonMutation
+from app.group_ms.groups.group_schema import Query as GroupQuery
+from app.group_ms.groups.group_schema import Mutation as GroupMutation
 from app.users_ms.users.users_schema import Query as UserQuery
 from app.users_ms.users.users_schema import Mutation as UserMutation
 from app.const import MEDIA_MS_URL
@@ -31,12 +33,12 @@ class HelloQuery:
 
 
 @strawberry.type
-class Query(HelloQuery, PostQuery, LikeQuery, CommentQuery, AuthQuery,PersonQuery,UserQuery):
+class Query(HelloQuery, PostQuery, LikeQuery, CommentQuery, AuthQuery,PersonQuery,UserQuery,GroupQuery):
     pass
 
 
 @strawberry.type
-class Mutation(PostMutation, LikeMutation, CommentMutation, AuthMutation,PersonMutation,UserMutation):
+class Mutation(PostMutation, LikeMutation, CommentMutation, AuthMutation,PersonMutation,UserMutation,GroupMutation):
     pass
 
 
