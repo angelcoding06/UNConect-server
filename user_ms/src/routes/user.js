@@ -12,6 +12,7 @@ userroutes.get('/', UserController.getAllUsers);
 // Ruta para obtener un usuario por su ID
 userroutes.get('/:id', UserController.getUserById);
 
+userroutes.get('/authid/:id', UserController.getUserByAuthId)
 // Ruta para crear un nuevo usuario
 userroutes.post('/', UserController.createUser);
 
