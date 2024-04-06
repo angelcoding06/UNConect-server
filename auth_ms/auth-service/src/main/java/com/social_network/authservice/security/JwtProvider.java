@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import com.social_network.authservice.entity.AuthUser;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -29,7 +30,7 @@ public class JwtProvider {
 		claims = Jwts.claims().setSubject(authuser.getEmail());
 		claims.put("id", authuser.getId());
 		Date now = new Date();
-		Date exp = new Date(now.getTime() + 3600000);
+		Date exp = new Date(now.getTime() + 10000);
 		return Jwts.builder().setClaims(claims).setIssuedAt(now).setExpiration(exp)
 				.signWith(getSigningKey()).compact();
 	}
@@ -38,8 +39,8 @@ public class JwtProvider {
 		try {
 			Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token);
 			return true;
-		} catch (Exception e) {
-			return false;
+		} catch (Exception ex) {
+			throw ex;
 		}
 	}
 

@@ -14,6 +14,7 @@ import com.social_network.authservice.entity.AuthUser;
 import com.social_network.authservice.entity.Role;
 import com.social_network.authservice.repository.AuthUserRepository;
 import com.social_network.authservice.security.JwtProvider;
+import io.jsonwebtoken.ExpiredJwtException;
 
 @Service
 public class AuthUserService {
@@ -103,9 +104,13 @@ public class AuthUserService {
 		return null;
 	}
 
-	public AuthUser validate(String token) {
+	public AuthUser validate(String token)
+			throws ExpiredJwtException, io.jsonwebtoken.security.SignatureException {
+
 		if (!jwtProvider.validate(token))
 			return null;
+
+
 		UUID id = UUID.fromString(jwtProvider.getIdFromToken(token));
 		Optional<AuthUser> user = authUserRepository.findById(id);
 		if (!user.isPresent())
