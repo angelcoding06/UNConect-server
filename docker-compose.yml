@@ -2,6 +2,8 @@ version: '3.9'
 services:
   unconnect_mq:
     image: 'rabbitmq:3-management'
+    networks:
+      - backend-network
     container_name: 'unconnect_mq'
     ports:
       - '5672:5672'
@@ -9,6 +11,8 @@ services:
 
   unconnect_posts_ms:
     container_name: 'unconnect_posts_ms'
+    networks:
+      - backend-network
     build:
       context: ./post_ms/
     # ports:
@@ -24,6 +28,8 @@ services:
   unconnect_posts_db:
     image: mongo:latest
     container_name: 'unconnect_posts_db'
+    networks:
+      - backend-network
     volumes:
       - mongodb_data_container:/data/db
     env_file:
@@ -37,6 +43,8 @@ services:
 
   unconnect_media_ms:
     container_name: 'unconnect_media_ms'
+    networks:
+      - backend-network
     build:
       context: ./media_ms/
     volumes:
@@ -55,6 +63,8 @@ services:
   unconnect_media_db:
     image: mongo:latest
     container_name: 'unconnect_media_db'
+    networks:
+      - backend-network
     volumes:
       - mongodb_data_container_media:/data/db
     env_file:
@@ -68,6 +78,8 @@ services:
 
   unconnect_auth_ms:
     container_name: unconnect_auth_ms
+    networks:
+      - backend-network
     image: unconnect_auth_ms_image
     build:
       context: ./auth_ms/auth-service/
@@ -88,6 +100,8 @@ services:
 
   unconnect_auth_db:
     container_name: unconnect_auth_db
+    networks:
+      - backend-network
     image: mysql
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
@@ -97,6 +111,8 @@ services:
 
   unconnect_group_ms:
     container_name: 'unconnect_group_ms'
+    networks:
+      - backend-network
     build:
       context: ./group_ms/
     # ports:
@@ -110,6 +126,8 @@ services:
 
   unconnect_users_ms:
     container_name: 'unconnect_users_ms'
+    networks:
+      - backend-network
     build:
       context: ./user_ms/
     # ports:
@@ -126,6 +144,8 @@ services:
   unconnect_users_db:
     image: postgres:latest
     container_name: 'unconnect_users_db'
+    networks:
+      - backend-network
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
@@ -137,6 +157,8 @@ services:
 
   unconnect_notification_ms:
     container_name: 'unconnect_notification_ms'
+    networks:
+      - backend-network
     build:
       context: ./notification_ms/
     # ports:
@@ -146,7 +168,9 @@ services:
       - environment.env
 
   unconnect_ag:
-    container_name: unconnect_ag
+    container_name: 'unconnect_ag'
+    networks:
+      - backend-network
     build:
       context: ./api_gateway/
     ports:
@@ -166,3 +190,7 @@ volumes:
   mongodb_data_container_media:
   mysql_data_container_auth:
   postgres_data:
+
+networks:
+  backend-network:
+    driver: bridge
