@@ -19,7 +19,7 @@ exports.getUserById = async (req, res, next) => {
   const { id } = req.params; // Obtiene el ID del usuario desde los parámetros de la solicitud
   try {
     // Busca un usuario por su ID en la base de datos
-    const user = await User.findByPk(id);
+    const user = await User.findOne({ where: { ID_Auth: id } });
     // Si no se encuentra el usuario, devuelve un error
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
@@ -99,7 +99,7 @@ exports.updateUser = async (req, res, next) => {
   const { id } = req.params; // Obtiene el ID del usuario desde los parámetros de la solicitud
   try {
     // Busca el usuario por su ID
-    const user = await User.findByPk(id);
+    const user = await User.findOne({ where: { ID_Auth: id } });
 
     // Si no se encuentra el usuario, devuelve un error
     if (!user) {
@@ -122,7 +122,7 @@ exports.deleteUser = async (req, res, next) => {
   const { id } = req.params; // Obtiene el ID del usuario desde los parámetros de la solicitud
   try {
     // Busca el usuario por su ID
-    const user = await User.findByPk(id);
+    const user = await User.findOne({ where: { ID_Auth: id } });
     // Si no se encuentra el usuario, devuelve un error
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
