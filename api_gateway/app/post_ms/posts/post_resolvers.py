@@ -3,7 +3,7 @@ from app.post_ms.posts.definitions.post import PostClass, paginatedPosts
 from strawberry.exceptions import GraphQLError
 from app.const import POST_MS_URL
 import typing
-
+from app.utils.verifyuser import verifyUser
 def get_one_post(postId: str) -> PostClass:
     try:
         response = requests.get(f"{POST_MS_URL}/posts",headers={"PostId":f"{postId}"})
@@ -63,7 +63,13 @@ def get_group_posts(page: int, GroupId:str)-> paginatedPosts:
     except KeyError as error:  # Keys error
         raise GraphQLError(f"Error al procesar la respuesta: {error}")
 
-def create_post(Content:str, UserId:str, GroupId:str = None, Media: typing.List[str] = [])-> PostClass:
+def create_post(token:str, Content:str, GroupId:str = None, Media: typing.List[str] = [])-> PostClass:
+    userVerified = verifyUser(token)
+    if userVerified == "UNAUTHORIZED":
+      raise GraphQLError("UNAUTHORIZED")
+    if userVerified == "Fallo al verificar":
+      raise GraphQLError("Fallo al verificar")
+    UserId = userVerified.id
     if GroupId is None:
         headers={"UserId":f"{UserId}"}
     else:
@@ -84,7 +90,12 @@ def create_post(Content:str, UserId:str, GroupId:str = None, Media: typing.List[
     except KeyError as error:  # Keys error
         raise GraphQLError(f"Error al procesar la respuesta: {error}")
 
-def edit_post(Content:str, PostId:str, UserId:str, GroupId:str = None)-> PostClass:
+def edit_post(Content:str, PostId:str, token:str, GroupId:str = None)-> PostClass:
+    userVerified = verifyUser(token)
+    if userVerified == "UNAUTHORIZED":
+      raise GraphQLError("UNAUTHORIZED")
+    if userVerified == "Fallo al verificar":
+      raise GraphQLError("Fallo al verificar")
     if GroupId is None:
         headers={"PostId":f"{PostId}"}
     else:
@@ -105,7 +116,12 @@ def edit_post(Content:str, PostId:str, UserId:str, GroupId:str = None)-> PostCla
     except KeyError as error:  # Keys error
         raise GraphQLError(f"Error al procesar la respuesta: {error}")
 
-def delete_post(PostId:str, UserId:str=None)-> str:
+def delete_post(PostId:str, token:str)-> str:
+    userVerified = verifyUser(token)
+    if userVerified == "UNAUTHORIZED":
+      raise GraphQLError("UNAUTHORIZED")
+    if userVerified == "Fallo al verificar":
+      raise GraphQLError("Fallo al verificar")
     try:
         response = requests.delete(f"{POST_MS_URL}/posts", headers = {"PostId":f"{PostId}"})
         if response.status_code != 200:

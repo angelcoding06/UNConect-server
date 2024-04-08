@@ -2,7 +2,7 @@ import requests
 from app.post_ms.likes.definitions.likes import LikesClass, paginatedLikes
 from strawberry.exceptions import GraphQLError
 from app.const import POST_MS_URL
-
+from app.utils.verifyuser import verifyUser
 def get_like_by_post(PostId:str,page:int) -> paginatedLikes:
     try:
         response = requests.get(f"{POST_MS_URL}/likes?page={page}",headers={"PostId":f"{PostId}"})
@@ -23,7 +23,13 @@ def get_like_by_post(PostId:str,page:int) -> paginatedLikes:
         raise GraphQLError(f"Error al procesar la respuesta: {error}")
 
 
-def create_like(UserId:str ,PostId:str, type:str) -> LikesClass:
+def create_like(token:str ,PostId:str, type:str) -> LikesClass:
+    userVerified = verifyUser(token)
+    if userVerified == "UNAUTHORIZED":
+        raise GraphQLError("UNAUTHORIZED")
+    if userVerified == "Fallo al verificar":
+        raise GraphQLError("Fallo al verificar")
+    UserId = userVerified.id
     try:
         response = requests.post(f"{POST_MS_URL}/likes", headers = {"UserId":UserId, "PostId":PostId}, json = {"type":type})
         if response.status_code == 404:
@@ -41,7 +47,13 @@ def create_like(UserId:str ,PostId:str, type:str) -> LikesClass:
 
 
 
-def edit_like(UserId:str ,PostId:str, type:str) -> LikesClass:
+def edit_like(token:str ,PostId:str, type:str) -> LikesClass:
+    userVerified = verifyUser(token)
+    if userVerified == "UNAUTHORIZED":
+        raise GraphQLError("UNAUTHORIZED")
+    if userVerified == "Fallo al verificar":
+        raise GraphQLError("Fallo al verificar")
+    UserId = userVerified.id
     try:
         response = requests.patch(f"{POST_MS_URL}/likes", headers = {"UserId":UserId, "PostId": PostId}, json = {"type":type})
         if response.status_code != 200:
@@ -57,7 +69,13 @@ def edit_like(UserId:str ,PostId:str, type:str) -> LikesClass:
     except KeyError as error:  # Keys error
         raise GraphQLError(f"Error al procesar la respuesta: {error}")
     
-def delete_like(UserId:str ,PostId:str) -> str:
+def delete_like(token:str ,PostId:str) -> str:
+    userVerified = verifyUser(token)
+    if userVerified == "UNAUTHORIZED":
+        raise GraphQLError("UNAUTHORIZED")
+    if userVerified == "Fallo al verificar":
+        raise GraphQLError("Fallo al verificar")
+    UserId = userVerified.id
     try:
         response = requests.delete(f"{POST_MS_URL}/likes", headers = {"PostId":PostId,"UserId":UserId})
         if response.status_code != 200:

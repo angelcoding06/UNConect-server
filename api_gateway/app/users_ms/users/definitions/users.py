@@ -29,5 +29,9 @@ class FriendRequestClass:
 	createdAt: str 
 
 @strawberry.type
+class UserFriendships:
+	friendships: typing.List[FriendRequestClass]
+
+@strawberry.type
 class FriendsArray:
 	friendIds: typing.List[str]

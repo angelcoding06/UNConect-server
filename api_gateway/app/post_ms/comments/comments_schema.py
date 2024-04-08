@@ -8,7 +8,7 @@ class Query:
 
 @strawberry.type
 class Mutation:
-    createcomment: CommentClass = strawberry.field(resolver=create_comment)
-    updatecomment: CommentClass = strawberry.field(resolver=edit_comment)
-    deletecomment: str = strawberry.field(resolver=delete_comment)
+    createcomment: CommentClass = strawberry.field(resolver=create_comment) # Requiere validación
+    updatecomment: CommentClass = strawberry.field(resolver=edit_comment) # Requiere validación
+    deletecomment: str = strawberry.field(resolver=delete_comment) # Requiere validación
 

@@ -8,7 +8,7 @@ class Query:
 
 @strawberry.type
 class Mutation:
-    createLike: LikesClass = strawberry.field(resolver=create_like)
-    updateLike: LikesClass = strawberry.field(resolver=edit_like)
-    deleteLike: str = strawberry.field(resolver=delete_like)
+    createLike: LikesClass = strawberry.field(resolver=create_like) # Requiere validación
+    updateLike: LikesClass = strawberry.field(resolver=edit_like) # Requiere validación 
+    deleteLike: str = strawberry.field(resolver=delete_like)# Requiere validación
 

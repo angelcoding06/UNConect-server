@@ -10,7 +10,7 @@ class Query:
 
 @strawberry.type
 class Mutation:
-    createPost: PostClass = strawberry.field(resolver=create_post)
-    updatePost: PostClass = strawberry.field(resolver=edit_post)
-    deletePost: str = strawberry.field(resolver=delete_post)
+    createPost: PostClass = strawberry.field(resolver=create_post) # Requiere validación
+    updatePost: PostClass = strawberry.field(resolver=edit_post)# Requiere validación
+    deletePost: str = strawberry.field(resolver=delete_post)# Requiere validación
 
