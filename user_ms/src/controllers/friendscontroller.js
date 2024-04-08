@@ -73,7 +73,7 @@ exports.rejectRequest = async (req, res, next) => {
     res.status(200).json({ message: 'Friendship request rejected and deleted successfully' });
   } catch (error) {
     console.error("Error en rejectRequest:", error);
-    next(error); // Pasa cualquier error al siguiente middleware
+    next(error); // Pasa cualquier error al sfiguiente middleware
   }
 };
 
@@ -130,3 +130,25 @@ exports.deleteFriend = async (req, res, next) => {
     next(error); // Pasa cualquier error al siguiente middleware
   }
 };
+
+exports.getUserFriendships = async (req, res, next) => {
+  const { userId } = req.params; 
+  
+  try {
+    // Buscar todas las amistades del usuario
+    const friendships = await Friendship.findAll({
+      where: {
+        [Sequelize.Op.or]: [
+          { senderId: userId },
+          { receiverId: userId }
+        ]
+      }
+    });
+    
+    // Respuesta exitosa
+    res.status(200).json({ friendships });
+  } catch (error) {
+    console.error("Error al obtener las amistades del usuario:", error);
+    next(error); // Pasa cualquier error al siguiente middleware
+  }
+}
