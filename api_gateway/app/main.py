@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import io
 import typing
 import requests
-
+from app.utils.verifyuser import verifyUser
 from app.post_ms.posts.post_schema import Query as PostQuery
 from app.post_ms.posts.post_schema import Mutation as PostMutation
 from app.post_ms.likes.likes_schema import Query as LikeQuery
@@ -59,8 +59,14 @@ async def root():
     return {"message": "Hello World from Api gateway"}
 
 
-@app.post("/upload-file/")
-def upload_file(files: typing.List[UploadFile],UserId:str):
+@app.post("/upload-file/") 
+def upload_file(files: typing.List[UploadFile],token:str):
+    userVerified = verifyUser(token)
+    if userVerified == "UNAUTHORIZED":
+        raise HTTPException("UNAUTHORIZED")
+    if userVerified == "Fallo al verificar":
+        raise HTTPException("Fallo al verificar")
+    UserId = userVerified.id
     print(files)
     files_data = []
     for file in files:
@@ -77,7 +83,7 @@ def upload_file(files: typing.List[UploadFile],UserId:str):
     else:
         raise HTTPException(status_code=response.status_code, detail="Failed to upload files")
     
-@app.get("/get-file/")
+@app.get("/get-file/") 
 def get_file(file_id: str):
     response = requests.get(f"{MEDIA_MS_URL}/media/{file_id}")
     if response.status_code == 200:
@@ -85,8 +91,13 @@ def get_file(file_id: str):
     else:
         raise HTTPException(status_code=response.status_code, detail="Failed to fetch file")
     
-@app.delete("/delete-file/")
-def delete_file(file_id: str, UserId:str):
+@app.delete("/delete-file/") # Requiere validación
+def delete_file(file_id: str, token:str):
+    userVerified = verifyUser(token)
+    if userVerified == "UNAUTHORIZED":
+        raise HTTPException("UNAUTHORIZED")
+    if userVerified == "Fallo al verificar":
+        raise HTTPException("Fallo al verificar")
     response = requests.delete(f"{MEDIA_MS_URL}/media/{file_id}")
     if response.status_code == 200:
         return JSONResponse(content={"message": "File deleted successfully"})
