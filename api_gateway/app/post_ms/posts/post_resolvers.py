@@ -134,3 +134,32 @@ def delete_post(PostId:str, token:str)-> str:
         raise GraphQLError(f"Error al contactar la API REST: {error}")
     except KeyError as error:  # Keys error
         raise GraphQLError(f"Error al procesar la respuesta: {error}")
+
+def get_my_post(token:str, page: int, GroupId:str = None)-> paginatedPosts:
+    userVerified = verifyUser(token)
+    if userVerified == "UNAUTHORIZED":
+        raise GraphQLError("UNAUTHORIZED")
+    if userVerified == "Fallo al verificar":
+        raise GraphQLError("Fallo al verificar")
+    UserId = userVerified.id
+    if GroupId is None:
+        headers={"UserId":f"{UserId}"}
+    else:
+        headers={"UserId":f"{UserId}","GroupId":f"{GroupId}"}
+    try:
+        response = requests.get(f"{POST_MS_URL}/posts/userPost?page={page}",headers=headers)
+        if response.status_code == 404:
+            raise GraphQLError(str(response.json()))
+        json_response = response.json()
+        for post in json_response["items"]:
+            post.pop("__v")
+        paginatedPost = paginatedPosts(**json_response)
+        paginatedPost.items = [PostClass(**item) for item in json_response["items"]]
+        return paginatedPost
+    
+    except ValueError as error: # Bad format
+        raise GraphQLError(str(error))
+    except requests.RequestException as error:  # net errors
+        raise GraphQLError(f"Error al contactar la API REST: {error}")
+    except KeyError as error:  # Keys error
+        raise GraphQLError(f"Error al procesar la respuesta: {error}")
