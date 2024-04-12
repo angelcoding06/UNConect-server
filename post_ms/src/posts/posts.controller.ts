@@ -36,6 +36,10 @@ export class PostsController {
   ) {
     return this.postsService.getUserPosts(page, UserId, GroupId);
   }
+  @Get('feed')
+  getFeed(@Query('page') page: QueryType, @Headers('UserId') UserId: string) {
+    return this.postsService.getFeed(page, UserId);
+  }
 
   @Get('groupPost')
   getGroupPost(

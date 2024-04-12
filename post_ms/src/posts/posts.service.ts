@@ -185,4 +185,33 @@ export class PostsService {
       }
     }
   }
+
+  async getFeed(page: Query, UserId: string) {
+    const filters = { UserId: { $ne: UserId } }; // para traer los posts que no sean del mismo usuario
+    try {
+      const userPosts = await paginate(this.postModel, page, filters);
+      if (page > userPosts.totalPages) {
+        throw new HttpException(
+          'The page number requested is greater than the total number of pages',
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      if (userPosts.items.length === 0) {
+        throw new HttpException(
+          'No posts were found for this user',
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      return userPosts;
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new HttpException(
+          `There was an error searching for the user's posts`,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
 }

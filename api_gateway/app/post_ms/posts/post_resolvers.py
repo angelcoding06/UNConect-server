@@ -163,3 +163,29 @@ def get_my_post(token:str, page: int, GroupId:str = None)-> paginatedPosts:
         raise GraphQLError(f"Error al contactar la API REST: {error}")
     except KeyError as error:  # Keys error
         raise GraphQLError(f"Error al procesar la respuesta: {error}")
+
+def get_feed(token:str, page: int):
+    userVerified = verifyUser(token)
+    if userVerified == "UNAUTHORIZED":
+        raise GraphQLError("UNAUTHORIZED")
+    if userVerified == "Fallo al verificar":
+        raise GraphQLError("Fallo al verificar")
+    UserId = userVerified.id
+    headers={"UserId":f"{UserId}"}
+    try:
+        response = requests.get(f"{POST_MS_URL}/posts/feed?page={page}",headers=headers)
+        if response.status_code == 404:
+            raise GraphQLError(str(response.json()))
+        json_response = response.json()
+        for post in json_response["items"]:
+            post.pop("__v")
+        paginatedPost = paginatedPosts(**json_response)
+        paginatedPost.items = [PostClass(**item) for item in json_response["items"]]
+        return paginatedPost
+
+    except ValueError as error: # Bad format
+        raise GraphQLError(str(error))
+    except requests.RequestException as error:  # net errors
+        raise GraphQLError(f"Error al contactar la API REST: {error}")
+    except KeyError as error:  # Keys error
+        raise GraphQLError(f"Error al procesar la respuesta: {error}")
