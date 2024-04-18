@@ -26,12 +26,7 @@ def get_person_group()-> PersonGroupResponse:
         raise GraphQLError(f"Error al procesar la respuesta: {error}")
 
 def create_person_group(token:str) -> PersonGroupClass:
-    userVerified = verifyUser(token)
-    if userVerified == "UNAUTHORIZED":
-        raise GraphQLError("UNAUTHORIZED")
-    if userVerified == "Fallo al verificar":
-        raise GraphQLError("Fallo al verificar")
-    user_id = userVerified.id
+    user_id = token
     try:
         response = requests.post(f"{GROUP_MS_URL}/groups/postPerson/", json = {"user_id":user_id})
         print(response)
