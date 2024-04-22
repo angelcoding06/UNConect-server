@@ -1,5 +1,5 @@
 from django.urls import path
-from groups.views.persons_v import getPerson,postPerson,putPerson,deletePerson
+from groups.views.persons_v import getPerson,postPerson,putPerson,deletePerson,get_person_g_by_auth_id
 from groups.views.groups_v import getGroup,postGroup,deleteGroup,putGroup, add_member, add_in_request, delete_member,delete_admin, add_admin, delete_in_request, get_in_request,get_members,get_admins,get_group_by_id
 urlpatterns=[
     path('getPerson/', getPerson),
@@ -20,5 +20,6 @@ urlpatterns=[
     path('add_admin/<int:pk>/', add_admin),
     path('get_admins/<int:group_id>/', get_admins),
     path('get_group_by_id/<int:group_id>/', get_group_by_id),
+    path('get_person_g_by_auth_id/<str:user_id>/', get_person_g_by_auth_id),
     
 ]

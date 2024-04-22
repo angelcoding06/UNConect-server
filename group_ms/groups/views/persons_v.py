@@ -4,6 +4,7 @@ from rest_framework.decorators import api_view
 from groups import serializers
 from rest_framework import status
 
+
 # Importaciones
 from groups.models import Persons
 from groups.serializers.persons_s import PersonsSerielizer
@@ -53,6 +54,21 @@ def putPerson(request, pk):
         
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+@api_view(['GET'])
+def get_person_g_by_auth_id(request, user_id):
+    try:
+        person = Persons.objects.get(user_id=user_id)
+        serializer = PersonsSerielizer(person, many=False)
+                
+    except Persons.DoesNotExist:
+        return Response({"error": f"No se encontró una persona con el ID '{user_id}'"}, status=status.HTTP_404_NOT_FOUND)
+            
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+        
+       
 
 @api_view(['DELETE'])
 def deletePerson(request, pk):

@@ -1,10 +1,11 @@
 import strawberry
 from app.group_ms.persons.definitions.persons import PersonGroupClass, PersonGroupResponse
-from app.group_ms.persons.persons_resolvers import get_person_group,create_person_group,edit_person_group,delete_person_group
+from app.group_ms.persons.persons_resolvers import get_person_group,create_person_group,edit_person_group,delete_person_group,get_person_g_by_auth_id
 import typing
 @strawberry.type
 class Query:
-    PersonGroupClass: PersonGroupResponse = strawberry.field(resolver=get_person_group)
+    GetPersonss: PersonGroupResponse = strawberry.field(resolver=get_person_group)
+    PersonByAuthID: PersonGroupClass = strawberry.field(resolver=get_person_g_by_auth_id)
 
 
 @strawberry.type

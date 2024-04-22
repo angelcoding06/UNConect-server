@@ -76,3 +76,30 @@ def delete_person_group(id:int) -> str:
     except KeyError as error:  # Keys error
         raise GraphQLError(f"Error al procesar la respuesta: {error}")
 
+
+def get_person_g_by_auth_id(token:str)-> PersonGroupClass :
+        userVerified = verifyUser(token)
+        if userVerified == "UNAUTHORIZED":
+            raise GraphQLError("UNAUTHORIZED")
+        if userVerified == "Fallo al verificar":
+            raise GraphQLError("Fallo al verificar")
+        id = userVerified.id
+        print("hola")
+        try:
+            response = requests.get(f"{GROUP_MS_URL}/groups/get_person_g_by_auth_id/{id}/")
+            print(response)
+            if response.status_code != 200:
+                raise GraphQLError((response.text))
+            text=response.text
+            text=json.loads(text)
+            return PersonGroupClass(**text)
+
+        except ValueError as error: # Bad format
+            raise GraphQLError(str(error))
+        except requests.RequestException as error:  # net errors
+            raise GraphQLError(f"Error al contactar la API REST: {error}")
+        except KeyError as error:  # Keys error
+            raise GraphQLError(f"Error al procesar la respuesta: {error}")
+    
+    
+ 
