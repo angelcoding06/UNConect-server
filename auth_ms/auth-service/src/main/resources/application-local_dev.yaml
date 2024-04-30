@@ -13,3 +13,8 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
+  ldap:
+    urls: ldap://localhost:389
+    base: dc=unconnect,dc=com
+    username: cn=admin,dc=unconnect,dc=com
+    password: admin

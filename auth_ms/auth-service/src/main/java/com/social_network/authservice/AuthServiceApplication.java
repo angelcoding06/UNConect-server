@@ -1,4 +1,5 @@
 package com.social_network.authservice;
+
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +16,11 @@ public class AuthServiceApplication {
 
 	@Bean
 	public Queue userQueue() {
-			Queue queue = new Queue("user-queue");
-			System.out.println("Queue 'user-queue' created successfully.");
-			return queue;
+		Queue queue = new Queue("user-queue");
+		System.out.println("Queue 'user-queue' created successfully.");
+		return queue;
 	}
+
 
 
 }

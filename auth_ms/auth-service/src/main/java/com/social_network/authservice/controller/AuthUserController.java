@@ -19,7 +19,9 @@ import com.social_network.authservice.dto.AuthUserRequestDto;
 import com.social_network.authservice.dto.AuthUserResponseDto;
 import com.social_network.authservice.dto.TokenDto;
 import com.social_network.authservice.entity.AuthUser;
+import com.social_network.authservice.entity.LdapUser;
 import com.social_network.authservice.service.AuthUserService;
+import com.social_network.authservice.service.LdapUserService;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -40,6 +42,9 @@ public class AuthUserController {
 	AuthUserService authUserService;
 
 	@Autowired
+	LdapUserService ldapUserService;
+
+	@Autowired
 	RabbitTemplate rabbitTemplate;
 
 	@GetMapping("/hi")
@@ -49,7 +54,9 @@ public class AuthUserController {
 
 	@PostMapping("/login")
 	public ResponseEntity<TokenDto> login(@RequestBody AuthUserRequestDto dto) {
-		TokenDto tokenDto = authUserService.login(dto);
+		TokenDto tokenDto = ldapUserService.authenticate(dto.getEmail(), dto.getPassword())
+				? authUserService.login(dto)
+				: null;
 		if (tokenDto == null)
 			return ResponseEntity.badRequest().build();
 		return ResponseEntity.ok(tokenDto);
@@ -65,9 +72,15 @@ public class AuthUserController {
 
 	@PostMapping()
 	public ResponseEntity<AuthUserResponseDto> save(@RequestBody AuthUserRequestDto dto) {
-		AuthUser authUser = authUserService.save(dto);
+		AuthUser authUser = ldapUserService.createUser(dto.getEmail(), dto.getPassword()) != null
+				? authUserService.save(dto)
+				: null;
+
 		if (authUser == null)
 			return ResponseEntity.badRequest().build();
+		System.out.println("---------------------------------");
+		System.out.println("creado");
+		System.out.println("---------------------------------");
 		String json = String.format("{\"ID_Auth\":\"%s\"}", authUser.getId());
 		rabbitTemplate.convertAndSend("user-queue", json);
 
