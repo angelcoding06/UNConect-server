@@ -6,6 +6,7 @@ export enum FileTypes {
   JPG = 'image/jpeg',
   VIDEO = 'video/mp4',
   PNG = 'image/png',
+  OCTE = 'application/octet-stream',
 }
 
 export type MediaDocument = HydratedDocument<Media>;
