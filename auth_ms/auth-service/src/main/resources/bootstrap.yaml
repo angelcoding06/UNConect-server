@@ -1,7 +1,7 @@
 spring:
   profiles:
     default: "local_dev"
-    active: "docker,local_dev"
+    active: "local_dev"
   application:
     name: auth-service
   cloud:

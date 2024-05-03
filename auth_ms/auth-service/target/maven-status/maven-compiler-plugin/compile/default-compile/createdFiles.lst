@@ -1,7 +1,6 @@
 com\social_network\authservice\dto\AuthUserRequestDto$AuthUserRequestDtoBuilder.class
 com\social_network\authservice\dto\AuthUserResponseDto.class
 com\social_network\authservice\entity\LdapUser.class
-com\social_network\authservice\repository\LdapUserRepository.class
 com\social_network\authservice\AuthServiceApplication.class
 com\social_network\authservice\repository\AuthUserRepository.class
 com\social_network\authservice\security\PasswordEncoderConfig.class

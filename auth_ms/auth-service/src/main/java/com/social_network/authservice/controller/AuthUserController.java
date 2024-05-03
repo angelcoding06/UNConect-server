@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +18,6 @@ import com.social_network.authservice.dto.AuthUserRequestDto;
 import com.social_network.authservice.dto.AuthUserResponseDto;
 import com.social_network.authservice.dto.TokenDto;
 import com.social_network.authservice.entity.AuthUser;
-import com.social_network.authservice.entity.LdapUser;
 import com.social_network.authservice.service.AuthUserService;
 import com.social_network.authservice.service.LdapUserService;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -72,15 +70,11 @@ public class AuthUserController {
 
 	@PostMapping()
 	public ResponseEntity<AuthUserResponseDto> save(@RequestBody AuthUserRequestDto dto) {
-		AuthUser authUser = ldapUserService.createUser(dto.getEmail(), dto.getPassword()) != null
-				? authUserService.save(dto)
-				: null;
+		AuthUser authUser = ldapUserService.createUser(dto.getEmail(), dto.getRole().name(),
+				dto.getPassword()) != null ? authUserService.save(dto) : null;
 
 		if (authUser == null)
 			return ResponseEntity.badRequest().build();
-		System.out.println("---------------------------------");
-		System.out.println("creado");
-		System.out.println("---------------------------------");
 		String json = String.format("{\"ID_Auth\":\"%s\"}", authUser.getId());
 		rabbitTemplate.convertAndSend("user-queue", json);
 

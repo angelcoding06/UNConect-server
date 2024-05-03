@@ -8,7 +8,6 @@ P:\SoftwareArchitecture\UNConnect-server\auth_ms\auth-service\src\main\java\com\
 P:\SoftwareArchitecture\UNConnect-server\auth_ms\auth-service\src\main\java\com\social_network\authservice\AuthServiceApplication.java
 P:\SoftwareArchitecture\UNConnect-server\auth_ms\auth-service\src\main\java\com\social_network\authservice\dto\TokenDto.java
 P:\SoftwareArchitecture\UNConnect-server\auth_ms\auth-service\src\main\java\com\social_network\authservice\entity\Role.java
-P:\SoftwareArchitecture\UNConnect-server\auth_ms\auth-service\src\main\java\com\social_network\authservice\repository\LdapUserRepository.java
 P:\SoftwareArchitecture\UNConnect-server\auth_ms\auth-service\src\main\java\com\social_network\authservice\service\AuthUserService.java
 P:\SoftwareArchitecture\UNConnect-server\auth_ms\auth-service\src\main\java\com\social_network\authservice\entity\LdapUser.java
 P:\SoftwareArchitecture\UNConnect-server\auth_ms\auth-service\src\main\java\com\social_network\authservice\repository\AuthUserRepository.java

@@ -29,7 +29,7 @@ public class JwtProvider {
 		claims = Jwts.claims().setSubject(authuser.getEmail());
 		claims.put("id", authuser.getId());
 		Date now = new Date();
-		Date exp = new Date(now.getTime() + 10000);
+		Date exp = new Date(now.getTime() + 3600000);
 		return Jwts.builder().setClaims(claims).setIssuedAt(now).setExpiration(exp)
 				.signWith(getSigningKey()).compact();
 	}
