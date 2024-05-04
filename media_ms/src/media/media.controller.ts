@@ -84,6 +84,11 @@ export class MediaController {
           'Content-Type': 'image/png',
         });
         break;
+      case FileTypes.OCTE:
+        res.set({
+          'Content-Type': 'application/octet-stream',
+        });
+        break;
       default:
         throw new HttpException('Invalid file type', HttpStatus.BAD_REQUEST);
     }
