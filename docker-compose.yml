@@ -196,6 +196,17 @@ services:
       - backend-network
     depends_on:
       - unconnect_ag
+  unconnect_ag_int:
+    container_name: unconnect_ag_int
+    image: nginx:latest
+    volumes:
+      - ./int_rp/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "82:82"
+    networks:
+      - backend-network
+    depends_on:
+      - unconnect_ag
 volumes:
   mongodb_data_container:
   mongodb_data_container_media:
