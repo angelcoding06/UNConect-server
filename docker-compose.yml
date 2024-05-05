@@ -1,13 +1,13 @@
 version: '3.9'
 services:
-  # unconnect_soap_server:
-  #   container_name: 'unconnect_soap_server'
-  #   networks:
-  #     - backend-network
-  #   build:
-  #     context: ./soap_int/
-  #   ports:
-  #     - 8082:8082
+  unconnect_int:
+    container_name: 'unconnect_int'
+    networks:
+      - backend-network
+    build:
+      context: ./soap_int/
+    ports:
+      - 8082:8082
 
   unconnect_mq:
     image: 'rabbitmq:3-management'
@@ -194,6 +194,7 @@ services:
       - unconnect_media_ms
       - unconnect_auth_ms
       - unconnect_notification_ms
+      - unconnect_int
   unconnect_ag_rp:
     container_name: unconnect_ag_rp
     image: nginx:latest
@@ -205,6 +206,7 @@ services:
       - backend-network
     depends_on:
       - unconnect_ag
+      - unconnect_int
   unconnect_ag_int:
     container_name: unconnect_ag_int
     image: nginx:latest

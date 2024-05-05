@@ -5,10 +5,10 @@ FROM python:3.7
 WORKDIR /app
 
 # Copia el archivo de requerimientos al contenedor
-COPY requirements.txt .
+COPY ./requirements.txt /app/requirements.txt
 
 # Instala las dependencias del proyecto
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r /app/requirements.txt
 
 # Copia todos los archivos al contenedor
 COPY . .
