@@ -1,11 +1,13 @@
 com\social_network\authservice\dto\AuthUserRequestDto$AuthUserRequestDtoBuilder.class
 com\social_network\authservice\dto\AuthUserResponseDto.class
+com\social_network\authservice\entity\LdapUser.class
 com\social_network\authservice\AuthServiceApplication.class
 com\social_network\authservice\repository\AuthUserRepository.class
 com\social_network\authservice\security\PasswordEncoderConfig.class
 com\social_network\authservice\security\SecurityConfig.class
 com\social_network\authservice\dto\AuthUserResponseDto$AuthUserResponseDtoBuilder.class
 com\social_network\authservice\dto\TokenDto.class
+com\social_network\authservice\service\LdapUserService.class
 com\social_network\authservice\entity\Role.class
 com\social_network\authservice\service\AuthUserService.class
 com\social_network\authservice\entity\AuthUser.class
@@ -13,4 +15,5 @@ com\social_network\authservice\dto\AuthUserRequestDto.class
 com\social_network\authservice\security\JwtProvider.class
 com\social_network\authservice\controller\AuthUserController.class
 com\social_network\authservice\dto\TokenDto$TokenDtoBuilder.class
+com\social_network\authservice\entity\LdapUser$LdapUserBuilder.class
 com\social_network\authservice\entity\AuthUser$AuthUserBuilder.class

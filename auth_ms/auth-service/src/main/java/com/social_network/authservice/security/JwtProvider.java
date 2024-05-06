@@ -38,8 +38,8 @@ public class JwtProvider {
 		try {
 			Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token);
 			return true;
-		} catch (Exception e) {
-			return false;
+		} catch (Exception ex) {
+			throw ex;
 		}
 	}
 

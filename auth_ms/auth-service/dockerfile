@@ -4,6 +4,8 @@ WORKDIR /app
 
 ENV SPRING_PROFILE=docker
 
+# RUN ./mvnw clean package -DskipTests
+
 COPY target/auth-service-0.0.1-SNAPSHOT.jar /app/auth-service.jar
 EXPOSE 8081
 ENTRYPOINT ["java", "-Dspring.profiles.active=${SPRING_PROFILE}","-jar", "auth-service.jar"]
