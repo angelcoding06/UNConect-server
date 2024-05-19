@@ -153,7 +153,7 @@ services:
       - DATABASE_USERNAME=${DATABASE_USERNAME}
       - DATABASE_PASSWORD=${DATABASE_PASSWORD}
       - SPRING_RABBITMQ_HOST=unconnect_mq
-      - LDAP_HOST=172.18.0.8
+      - LDAP_HOST=172.18.0.10
     depends_on:
       - unconnect_auth_db
       - unconnect_mq
