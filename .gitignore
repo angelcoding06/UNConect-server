@@ -1,3 +1,4 @@
 .env
 .vscode/
 x.html
+environment.env
