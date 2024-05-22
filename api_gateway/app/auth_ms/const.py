@@ -1,1 +1,2 @@
-AUTH_MS_URL = "http://172.18.0.14:8081"
+AUTH_MS_URL = "http://unconnect-auth-ms:8081"
+GROUP_MS_URL= "http://unconnect-group-ms:8001"
