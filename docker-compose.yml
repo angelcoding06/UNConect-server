@@ -1,51 +1,27 @@
 version: '3.9'
 services:
-  unconnect_auth_ms:
-    container_name: unconnect_auth_ms2
-    build:
-      context: ./auth_ms/auth-service/
+  manager:
+    image: docker:19.03.12-dind
+    privileged: true
     ports:
-      - 8081:8081
+      - "12377:2377" # puerto de Docker Swarm
+      - "8081:8081" # puerto del servicio unconnect_auth_ms
+      - "81:81"    
+      - "8000:8000" 
     environment:
-      - SPRING_PROFILE = ${SPRING_PROFILE}
-      - DATABASE_URL=${DATABASE_URL}
-      - DATABASE_USERNAME=${DATABASE_USERNAME}
-      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
-    depends_on:
-      - mysqldb
-    links:
-      - mysqldb
-    restart: on-failure
-  mysqldb:
-    container_name: mysqldb
-    image: mysql
+      DOCKER_TLS_CERTDIR: ""
+    command: dockerd --swarm-default-advertise-addr=eth0
+
+  worker1:
+    image: docker:19.03.12-dind
+    privileged: true
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-    volumes:
-      - mysql_data_container_auth:/var/lib/mysq
-  unconnect_ag_rp:
-    container_name: unconnect_ag_rp2
-    image: nginx:latest
-    volumes:
-      - ./nginxx.conf:/etc/nginx/nginx.conf
-    ports:
-      - "81:81"
-    depends_on:
-      - unconnect_ag
+      DOCKER_TLS_CERTDIR: ""
+    command: dockerd
 
-  unconnect_ag:
-    container_name: unconnect_ag2
-    build:
-      context: ./api_gateway/
-    ports:
-      - 8000:8000
+  worker2:
+    image: docker:19.03.12-dind
+    privileged: true
     environment:
-      PORT: 8000
-    command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-    links:
-      - unconnect_auth_ms
-
-
-volumes:
-  mysql_data_container_auth:
+      DOCKER_TLS_CERTDIR: ""
+    command: dockerd

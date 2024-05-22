@@ -1,0 +1,75 @@
+version: '3.9'
+services:
+  unconnect-auth-ms:
+    networks: 
+      - unconnect-network
+    image: unconnect_auth_ms_image
+    build:
+      context: ./auth_ms/auth-service/
+    ports:
+      - 8081:8081
+    environment:
+      - SPRING_PROFILE=docker
+      - DATABASE_URL=jdbc:mysql://mysqldb:3306/authdb
+      - DATABASE_USERNAME=root
+      - DATABASE_PASSWORD=newpass123
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+    depends_on:
+      - mysqldb
+
+  mysqldb:
+    networks: 
+      - unconnect-network
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=newpass123
+      - MYSQL_DATABASE=authdb
+    volumes:
+      - mysql_data_container_auth:/var/lib/mysql
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+
+  unconnect-ag-rp:
+    networks: 
+      - unconnect-network
+    image: nginx:latest
+    volumes:
+      - ./nginxx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "81:81"
+    depends_on:
+      - unconnect-ag
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  unconnect-ag:
+    networks: 
+      - unconnect-network
+    image: unconnect_ag_image
+    build:
+      context: ./api_gateway/
+    ports:
+      - 8000:8000
+    depends_on:
+      - unconnect-auth-ms
+    environment:
+      PORT: 8000
+    command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+    
+
+volumes:
+  mysql_data_container_auth:
+networks:
+  unconnect-network:
+    external: true
