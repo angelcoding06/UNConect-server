@@ -7,7 +7,7 @@ class solicitudSOAP(ServiceBase):
     @rpc(String, String, _returns=String)
     def register(self, email, password):
         # Construir la solicitud GraphQL
-        url = 'http://unconnect_ag_int:82/graphql'
+        url = 'http://unconnect-ag-int:82/graphql'
         headers = {'Content-Type': 'application/json'}
         query = '''
         mutation {

@@ -25,9 +25,9 @@ SECRET_KEY = 'django-insecure-1=7=q5mc5try1cz0+hh2&+$$*i^5c$mg!s1)i03ef%4b*l+sur
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*',"http://unconnect_ag:8000"]
+ALLOWED_HOSTS = ['*',"http://unconnect-ag:8000"]
 CORS_ALLOWED_ORIGINS = [
-    'http://unconnect_ag:8000',  # Reemplaza 'api_gateway_container_name' con el nombre del contenedor del API Gatewa
+    'http://unconnect-ag:8000',  # Reemplaza 'api_gateway_container_name' con el nombre del contenedor del API Gatewa
 ]
 # Application definition
 
